@@ -1,0 +1,46 @@
+{
+	"updatedOn": "2020-09-08 20:48:54",
+	"keywords": [
+		{
+			"key": "sectoid",
+			"words": [
+				"Sectoid",
+				"Sectoide"
+			]
+		}
+	],
+	"articles": [
+		{
+			"key": "index",
+			"article": "index.dsl"
+		},
+		{
+			"key": "sectoid",
+			"article": "sectoid.dsl"
+		}
+	],
+	"articleTranslations" : [
+		{
+			"key": "index",
+			"locale": "es",
+			"translation": "index-es.dsl"
+		},
+		{
+			"key": "sectoid",
+			"locale": "es",
+			"translation": "sectoid-es.dsl"
+		}
+	],
+	"search": [
+		{
+			"keyword" : "sectoid",
+			"article": "sectoid",
+			"weight": "9999"
+		},
+		{
+			"keyword": "sectoid",
+			"article": "index",
+			"weight": "1"
+		}
+	]
+}
