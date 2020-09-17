@@ -1,17 +1,18 @@
 package com.bebesaurios.xcom2
 
 import android.content.Context
+import android.content.res.AssetManager
+import android.content.res.loader.AssetsProvider
 import android.util.Log
 import java.io.ByteArrayOutputStream
 import java.io.IOException
 
-object AssetHelper {
+class AssetHelper(val assetManager: AssetManager) {
 
-    fun openResourceAsString(context: Context, fileName: String): String {
+    fun openResourceAsString(fileName: String): String {
         val buffer = ByteArrayOutputStream()
         try {
-            val assetMgr = context.resources.assets
-            val `is` = assetMgr.open(fileName)
+            val `is` = assetManager.open(fileName)
             var nRead: Int
             val data = ByteArray(10240)
             while (`is`.read(data, 0, data.size).also { nRead = it } != -1) {
