@@ -1,3 +1,4 @@
 <resources>
-    <string name="app_name">XCOM2</string>
+    <string name="app_name">XCOM 2</string>
+    <string name="search">Search</string>
 </resources>

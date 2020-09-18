@@ -7,7 +7,7 @@ import android.util.Log
 import java.io.ByteArrayOutputStream
 import java.io.IOException
 
-class AssetHelper(val assetManager: AssetManager) {
+class AssetHelper(private val assetManager: AssetManager) {
 
     fun openResourceAsString(fileName: String): String {
         val buffer = ByteArrayOutputStream()
