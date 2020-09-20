@@ -1,8 +1,10 @@
 package com.bebesaurios.xcom2
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
+import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import org.koin.android.ext.android.inject
 import java.util.*
@@ -26,5 +28,17 @@ class MainActivity : AppCompatActivity() {
         // Inflate the menu; this adds items to the action bar if it is present.
         menuInflater.inflate(R.menu.main_menu, menu)
         return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.search_action -> initSearch()
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    private fun initSearch() {
+        val intent = Intent(this, SearchActivity::class.java)
+        startActivity(intent)
     }
 }

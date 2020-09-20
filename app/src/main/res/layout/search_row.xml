@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/colorPrimaryDark"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.bebesaurios.xcom2.search.ClearableWatcherEditText
+        android:id="@+id/editText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        android:textColor="#ffffff"
+        android:hint="@string/search"/>
+</androidx.constraintlayout.widget.ConstraintLayout>

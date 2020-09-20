@@ -4,10 +4,10 @@ import org.json.JSONArray
 import org.json.JSONObject
 
 class Database(assetHelper: AssetHelper) {
-    private val keywords: List<Keyword>
-    private val articles: List<Article>
+    val keywords: List<Keyword>
+    val articles: List<Article>
     private val translations: List<ArticleTranslation>
-    private val searches: List<Search>
+    val searches: List<Search>
 
     init {
         val content = assetHelper.openResourceAsString("MSI.json")

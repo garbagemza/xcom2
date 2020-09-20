@@ -1,6 +1,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
 
 android {
     compileSdkVersion 30
@@ -31,6 +32,10 @@ android {
     }
 }
 
+kapt {
+    correctErrorTypes = true
+}
+
 dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
@@ -41,6 +46,9 @@ dependencies {
     implementation 'com.google.android.material:material:1.2.1'
     implementation 'androidx.navigation:navigation-fragment-ktx:2.3.0'
     implementation 'androidx.navigation:navigation-ui-ktx:2.3.0'
+    implementation "com.airbnb.android:epoxy:$epoxy_version"
+    // Add the annotation processor if you are using Epoxy's annotations (recommended)
+    kapt "com.airbnb.android:epoxy-processor:$epoxy_version"
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
