@@ -1,12 +1,13 @@
-package com.bebesaurios.xcom2
+package com.bebesaurios.xcom2.database
 
+import com.bebesaurios.xcom2.AssetHelper
 import org.json.JSONArray
 import org.json.JSONObject
 
-class Database(assetHelper: AssetHelper) {
+class DatabaseModel(assetHelper: AssetHelper) {
     val keywords: List<Keyword>
     val articles: List<Article>
-    private val translations: List<ArticleTranslation>
+    val translations: List<ArticleTranslation>
     val searches: List<Search>
 
     init {
@@ -24,7 +25,6 @@ class Database(assetHelper: AssetHelper) {
     }
 
     private fun buildKeywords(keywordsArray: JSONArray): List<Keyword> {
-        var currentKeywordId = 1
         val list = mutableListOf<Keyword>()
         for (i in 0 until keywordsArray.length()) {
             val keywordObject = keywordsArray.getJSONObject(i)
@@ -32,7 +32,7 @@ class Database(assetHelper: AssetHelper) {
             val wordsArray = keywordObject.getJSONArray("words")
             for (j in 0 until wordsArray.length()) {
                 val word = wordsArray.getString(j)
-                val keyword = Keyword(currentKeywordId++, key, word)
+                val keyword = Keyword(key, word)
                 list.add(keyword)
             }
         }
@@ -40,48 +40,45 @@ class Database(assetHelper: AssetHelper) {
     }
 
     private fun buildArticles(articlesArray: JSONArray): List<Article> {
-        var currentArticleId = 1
         val list = mutableListOf<Article>()
         for (i in 0 until articlesArray.length()) {
             val articleObject = articlesArray.getJSONObject(i)
             val key = articleObject.getString("key")
             val articleString = articleObject.getString("article")
-            val article = Article(currentArticleId++, key, articleString)
+            val article = Article(key, articleString)
             list.add(article)
         }
         return list
     }
 
     private fun buildArticleTranslations(translationsArray: JSONArray): List<ArticleTranslation> {
-        var currentArticleId = 1
         val list = mutableListOf<ArticleTranslation>()
         for (i in 0 until translationsArray.length()) {
             val translationObject = translationsArray.getJSONObject(i)
             val key = translationObject.getString("key")
             val locale = translationObject.getString("locale")
             val translation = translationObject.getString("translation")
-            val articleTranslation = ArticleTranslation(currentArticleId++, key, locale, translation)
+            val articleTranslation = ArticleTranslation(key, locale, translation)
             list.add(articleTranslation)
         }
         return list
     }
 
     private fun buildSearches(searchesArray: JSONArray): List<Search> {
-        var currentSearchId = 1
         val list = mutableListOf<Search>()
         for (i in 0 until searchesArray.length()) {
             val searchObject = searchesArray.getJSONObject(i)
             val keyword = searchObject.getString("keyword")
             val article = searchObject.getString("article")
             val weight = searchObject.getInt("weight")
-            val search = Search(currentSearchId++, keyword, article, weight)
+            val search = Search(keyword, article, weight)
             list.add(search)
         }
         return list
     }
 }
 
-data class Keyword(val id: Int, val key: String, val word: String)
-data class Article(val id: Int, val key: String, val article: String)
-data class ArticleTranslation(val id: Int, val key: String, val locale: String, val translation: String)
-data class Search(val id: Int, val keyword: String, val article: String, val weight: Int)
+data class Keyword(val key: String, val word: String)
+data class Article(val key: String, val article: String)
+data class ArticleTranslation(val key: String, val locale: String, val translation: String)
+data class Search(val keyword: String, val article: String, val weight: Int)

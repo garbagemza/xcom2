@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
+import com.bebesaurios.xcom2.database.DatabaseFeeder
 import org.koin.android.ext.android.inject
 import java.util.*
 
@@ -16,8 +17,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.main_activity)
         setSupportActionBar(findViewById(R.id.toolbar))
-
-        val database : Database by inject()
 
         val locale = Locale.getDefault()
         Log.i("xcom2", locale.language)

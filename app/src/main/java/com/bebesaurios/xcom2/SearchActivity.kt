@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import androidx.appcompat.app.AppCompatActivity
+import com.bebesaurios.xcom2.database.Database
 import com.bebesaurios.xcom2.search.searchResultRow
 import kotlinx.android.synthetic.main.search_activity.*
 import org.koin.android.ext.android.inject
@@ -32,29 +33,15 @@ class SearchActivity : AppCompatActivity() {
 
     private fun updateModel(searchText: String) {
         val database : Database by inject()
-        val keywords = database.keywords.filter { it.word.contains(searchText, ignoreCase = true) }.map { it.key }
-        val searches = database.searches.filter { search ->
-            keywords.contains(search.keyword)
-        }.sortedByDescending { it.weight }
-
+        val results = database.findSearchResults(searchText)
         epoxyRecyclerView.withModels {
-            for (search in searches) {
+            for (result in results) {
                 searchResultRow {
-                    id("searchResult ${search.id}")
-                    text(search.article)
+                    id("searchResult ${result.id}")
+                    text(result.article)
                 }
             }
         }
-//        epoxyRecyclerView.withModels {
-//
-//            for (article in database.articles) {
-//                searchResultRow {
-//                    id(article.id)
-//                    text(article.article)
-//                    isStickyHeader(0)
-//                }
-//            }
-//        }
 
     }
 
