@@ -10,6 +10,6 @@ interface SearchDao : BaseDao<SearchEntity> {
     @Query("SELECT * from searches")
     fun getAll() : List<SearchEntity>
 
-    @Query("SELECT * from searches where keyword = (SELECT DISTINCT key from keywords WHERE word like :searchResult)")
+    @Query("SELECT * from searches where keyword = (SELECT DISTINCT key from keywords WHERE word like :searchResult) ORDER by weight DESC")
     fun find(searchResult: String) : List<SearchEntity>
 }
