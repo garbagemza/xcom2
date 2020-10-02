@@ -15,7 +15,7 @@ class XCOM2Application : Application() {
         startKoin {
             androidLogger(Level.NONE)
             androidContext(this@XCOM2Application)
-            modules(persistenceModule)
+            modules(persistenceModule, networkModule)
         }
 
         //val feeder: DatabaseFeeder by inject()
