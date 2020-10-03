@@ -8,4 +8,7 @@ import retrofit2.http.GET
 interface FileService {
     @GET("MSI.json")
     fun getMasterSearchIndexMetadata(): Call<ResponseBody>
+
+    @GET("MSI.json?alt=media")
+    fun getMasterSearchIndex(): Call<ResponseBody>
 }
