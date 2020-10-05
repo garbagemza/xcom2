@@ -9,4 +9,7 @@ import com.bebesaurios.xcom2.database.entities.ArticleEntity
 interface ArticleDao : BaseDao<ArticleEntity> {
     @Query("SELECT * from articles")
     fun getAll() : List<ArticleEntity>
+
+    @Query("DELETE from articles")
+    fun deleteAll()
 }

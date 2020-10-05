@@ -1,18 +1,15 @@
 package com.bebesaurios.xcom2.database
 
-import com.bebesaurios.xcom2.AssetHelper
 import org.json.JSONArray
 import org.json.JSONObject
 
-class DatabaseModel(assetHelper: AssetHelper) {
+class DatabaseModel(mainJson: JSONObject) {
     val keywords: List<Keyword>
     val articles: List<Article>
     val translations: List<ArticleTranslation>
     val searches: List<Search>
 
     init {
-        val content = assetHelper.openResourceAsString("MSI.json")
-        val mainJson = JSONObject(content)
         val keywordsArray = mainJson.getJSONArray("keywords")
         val articlesArray = mainJson.getJSONArray("articles")
         val translationsArray = mainJson.getJSONArray("articleTranslations")

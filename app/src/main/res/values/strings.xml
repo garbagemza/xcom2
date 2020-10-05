@@ -3,4 +3,5 @@
     <string name="search">Search</string>
     <string name="downloading_new_content">Downloading new content</string>
     <string name="unable_to_download_content_try_again_later">Unable to download content. Try again later!</string>
+    <string name="updating_content">Updating content</string>
 </resources>

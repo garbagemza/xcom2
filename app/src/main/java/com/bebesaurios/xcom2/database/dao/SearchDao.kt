@@ -12,4 +12,8 @@ interface SearchDao : BaseDao<SearchEntity> {
 
     @Query("SELECT * from searches where keyword = (SELECT DISTINCT key from keywords WHERE word like :searchResult) ORDER by weight DESC")
     fun find(searchResult: String) : List<SearchEntity>
+
+    @Query("DELETE from searches")
+    fun deleteAll()
+
 }

@@ -3,16 +3,22 @@ package com.bebesaurios.xcom2.bootstrap
 import androidx.annotation.MainThread
 import androidx.annotation.StringRes
 import androidx.annotation.WorkerThread
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import com.bebesaurios.xcom2.R
+import com.bebesaurios.xcom2.database.DatabaseFeeder
+import com.bebesaurios.xcom2.database.DatabaseModel
 import com.bebesaurios.xcom2.service.MSIMetadataResult
 import com.bebesaurios.xcom2.service.MSIResult
 import com.bebesaurios.xcom2.service.downloadMSI
 import com.bebesaurios.xcom2.service.getMSIMetadata
+import com.bebesaurios.xcom2.util.Preferences
 import com.bebesaurios.xcom2.util.SingleLiveEvent
 import com.bebesaurios.xcom2.util.exhaustive
 import com.bebesaurios.xcom2.util.postMainThread
 import org.json.JSONObject
+import org.koin.core.parameter.parametersOf
+import org.koin.java.KoinJavaComponent.inject
 import kotlin.concurrent.thread
 
 class BootstrapViewModel : ViewModel() {
@@ -41,11 +47,6 @@ class BootstrapViewModel : ViewModel() {
     }
 
     @WorkerThread
-    private fun downloadMSI(newToken: String) {
-        TODO("Not yet implemented")
-    }
-
-    @WorkerThread
     private fun downloadMSIForFirstTime(newToken: String) {
         updateWorkStatus(R.string.downloading_new_content)
         when (val result = downloadMSI()) {
@@ -54,9 +55,22 @@ class BootstrapViewModel : ViewModel() {
         }.exhaustive
     }
 
+    @WorkerThread
+    private fun downloadMSI(newToken: String) {
+        updateWorkStatus(R.string.updating_content)
+        when (val result = downloadMSI()) {
+            is MSIResult.Success -> updateMSI(newToken, result.json)
+            MSIResult.Failure -> updateWorkStatus(R.string.unable_to_download_content_try_again_later)
+        }.exhaustive
+    }
 
     private fun updateMSI(newToken: String, json: JSONObject) {
-        TODO("Not yet implemented")
+        val model = DatabaseModel(json)
+        val feeder: DatabaseFeeder by inject(DatabaseFeeder::class.java) { parametersOf(model) }
+        feeder.start()
+        val preferences: Preferences by inject(Preferences::class.java)
+        preferences.setMSIToken(newToken)
+        moveToHomeScreen()
     }
 
 
@@ -70,6 +84,7 @@ class BootstrapViewModel : ViewModel() {
         replyAction.value = ReplyAction.GoToHome
     }
 
+    fun reply() : LiveData<ReplyAction> = replyAction
 }
 
 sealed class InputAction {

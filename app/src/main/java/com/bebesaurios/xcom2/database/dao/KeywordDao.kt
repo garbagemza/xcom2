@@ -10,4 +10,7 @@ interface KeywordDao : BaseDao<KeywordEntity> {
     @Query("SELECT * from keywords")
     fun getAll() : List<KeywordEntity>
 
+    @Query("DELETE from keywords")
+    fun deleteAll()
+
 }

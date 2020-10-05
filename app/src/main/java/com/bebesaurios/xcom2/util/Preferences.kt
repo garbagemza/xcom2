@@ -6,4 +6,8 @@ class Preferences(private val sharedPreferences: SharedPreferences) {
     fun getMSIToken(): String {
         return sharedPreferences.getString("msiToken", "") ?: ""
     }
+
+    fun setMSIToken(newToken: String) {
+        sharedPreferences.edit().putString("msiToken", newToken).apply()
+    }
 }

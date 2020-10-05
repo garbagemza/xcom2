@@ -10,6 +10,9 @@ class DatabaseFeeder(private val dbModel: DatabaseModel, private val db: AppData
     fun start() {
 
         db.runInTransaction {
+
+            removeAllEntities()
+
             dbModel.articles.forEach { article ->
                 db.articleDao().insert(ArticleEntity(0, article.key, article.article))
             }
@@ -27,5 +30,14 @@ class DatabaseFeeder(private val dbModel: DatabaseModel, private val db: AppData
             }
         }
         db.close()
+    }
+
+    private fun removeAllEntities() {
+        db.apply {
+            articleDao().deleteAll()
+            searchDao().deleteAll()
+            keywordDao().deleteAll()
+            articleTranslationDao().deleteAll()
+        }
     }
 }

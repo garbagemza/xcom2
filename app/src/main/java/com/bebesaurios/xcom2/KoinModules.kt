@@ -10,26 +10,24 @@ import com.bebesaurios.xcom2.database.DatabaseModel
 import com.bebesaurios.xcom2.service.retrofit.FileService
 import com.bebesaurios.xcom2.util.Preferences
 import org.koin.android.ext.koin.androidApplication
-import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 import retrofit2.Retrofit
 
 
-
-
-
 val persistenceModule = module {
 
-    single { AssetHelper(androidContext().assets) }
+    //single { AssetHelper(androidContext().assets) }
     single {
         Room.databaseBuilder(androidApplication(), AppDatabase::class.java, "data.db")
             .allowMainThreadQueries()
             .build()
     }
-    single { DatabaseModel(get()) } // TODO: refactor this model
-    single { DatabaseFeeder(get(), get()) }
+
+    single { (model: DatabaseModel) -> DatabaseFeeder(model, get()) }
     single { Database(get()) }
+
+    // for preferences injection
     single { androidApplication().getSharedPreferences("preferences", Context.MODE_PRIVATE) }
     single { Preferences(get()) }
 

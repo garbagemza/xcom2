@@ -6,5 +6,4 @@ import androidx.room.OnConflictStrategy
 interface BaseDao<in E> {
     @Insert(onConflict = OnConflictStrategy.ABORT)
     fun insert(entity: E)
-
 }
