@@ -8,14 +8,14 @@ import androidx.lifecycle.ViewModel
 import com.bebesaurios.xcom2.R
 import com.bebesaurios.xcom2.database.DatabaseFeeder
 import com.bebesaurios.xcom2.database.DatabaseModel
-import com.bebesaurios.xcom2.service.MSIMetadataResult
 import com.bebesaurios.xcom2.service.MSIResult
-import com.bebesaurios.xcom2.service.downloadMSI
-import com.bebesaurios.xcom2.service.getMSIMetadata
+import com.bebesaurios.xcom2.service.MSIService
+import com.bebesaurios.xcom2.service.Result
 import com.bebesaurios.xcom2.util.Preferences
 import com.bebesaurios.xcom2.util.SingleLiveEvent
 import com.bebesaurios.xcom2.util.exhaustive
 import com.bebesaurios.xcom2.util.postMainThread
+import org.json.JSONException
 import org.json.JSONObject
 import org.koin.core.parameter.parametersOf
 import org.koin.java.KoinJavaComponent.inject
@@ -34,22 +34,68 @@ class BootstrapViewModel : ViewModel() {
 
     private fun checkData() {
         thread {
-            when (val result = getMSIMetadata()) {
-                MSIMetadataResult.NoUpdate -> moveToHomeScreen()
-                is MSIMetadataResult.TokenNeedsUpdate -> {
-                    if (result.currentToken.isEmpty())
-                        downloadMSIForFirstTime(result.newToken)
-                    else
-                        downloadMSI(result.newToken)
-                }
-            }.exhaustive
+            getMetadata { result ->
+                when (result) {
+                    is Result.Success -> successDownloadingMetadata(result.value)
+                    is Result.Failure -> failedGettingNewToken()
+                }.exhaustive
+            }
         }
     }
+
+    private fun getMetadata(block: (result: Result<JSONObject, Exception>) -> Unit) {
+        val result = MSIService.getMSIMetadata()
+        block.invoke(result)
+    }
+
+    private fun successDownloadingMetadata(value: JSONObject) {
+        val newToken = getTokenFromMSIMetadata(value)
+        if (newToken.isNotEmpty()) {
+            successGettingNewToken(newToken)
+        } else
+            failedGettingNewToken()
+    }
+
+    private fun failedGettingNewToken() {
+        val preferences: Preferences by inject(Preferences::class.java)
+        val currentToken = preferences.getMSIToken()
+        if (currentToken.isEmpty())
+            updateWorkStatus(R.string.unable_to_download_content_try_again_later)
+        else
+            moveToHomeScreen()
+    }
+
+    private fun successGettingNewToken(newToken: String) {
+        val preferences: Preferences by inject(Preferences::class.java)
+        val currentToken = preferences.getMSIToken()
+        if (currentToken != newToken) {
+            tokenNeedsUpdate(currentToken, newToken)
+        } else
+            moveToHomeScreen()
+    }
+
+    // retrieves the update token from msi metadata, returns empty string if error
+    private fun getTokenFromMSIMetadata(value: JSONObject) : String {
+        try {
+            return value.getString("updated")
+        } catch (e: JSONException) {
+
+        }
+        return ""
+    }
+
+    private fun tokenNeedsUpdate(currentToken: String, newToken: String) {
+        if (currentToken.isEmpty())
+            downloadMSIForFirstTime(newToken)
+        else
+            downloadMSI(newToken)
+    }
+
 
     @WorkerThread
     private fun downloadMSIForFirstTime(newToken: String) {
         updateWorkStatus(R.string.downloading_new_content)
-        when (val result = downloadMSI()) {
+        when (val result = MSIService.downloadMSI()) {
             is MSIResult.Success -> updateMSI(newToken, result.json)
             MSIResult.Failure -> updateWorkStatus(R.string.unable_to_download_content_try_again_later)
         }.exhaustive
@@ -58,7 +104,7 @@ class BootstrapViewModel : ViewModel() {
     @WorkerThread
     private fun downloadMSI(newToken: String) {
         updateWorkStatus(R.string.updating_content)
-        when (val result = downloadMSI()) {
+        when (val result = MSIService.downloadMSI()) {
             is MSIResult.Success -> updateMSI(newToken, result.json)
             MSIResult.Failure -> updateWorkStatus(R.string.unable_to_download_content_try_again_later)
         }.exhaustive
