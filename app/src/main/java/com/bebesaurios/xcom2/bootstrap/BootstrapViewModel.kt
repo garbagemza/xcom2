@@ -8,7 +8,6 @@ import androidx.lifecycle.ViewModel
 import com.bebesaurios.xcom2.R
 import com.bebesaurios.xcom2.database.DatabaseFeeder
 import com.bebesaurios.xcom2.database.DatabaseModel
-import com.bebesaurios.xcom2.service.MSIResult
 import com.bebesaurios.xcom2.service.MSIService
 import com.bebesaurios.xcom2.service.Result
 import com.bebesaurios.xcom2.util.Preferences
@@ -34,6 +33,7 @@ class BootstrapViewModel : ViewModel() {
 
     private fun checkData() {
         thread {
+            updateWorkStatus(R.string.checking_updates)
             getMetadata { result ->
                 when (result) {
                     is Result.Success -> successDownloadingMetadata(result.value)
@@ -84,30 +84,21 @@ class BootstrapViewModel : ViewModel() {
         return ""
     }
 
+    @WorkerThread
     private fun tokenNeedsUpdate(currentToken: String, newToken: String) {
-        if (currentToken.isEmpty())
-            downloadMSIForFirstTime(newToken)
-        else
-            downloadMSI(newToken)
+        updateWorkStatus(if (currentToken.isEmpty()) R.string.downloading_new_content else R.string.updating_content)
+
+        downloadMSI { result ->
+            when (result) {
+                is Result.Success -> updateMSI(newToken, result.value)
+                is Result.Failure -> updateWorkStatus(R.string.unable_to_download_content_try_again_later)
+            }.exhaustive
+        }
     }
 
-
-    @WorkerThread
-    private fun downloadMSIForFirstTime(newToken: String) {
-        updateWorkStatus(R.string.downloading_new_content)
-        when (val result = MSIService.downloadMSI()) {
-            is MSIResult.Success -> updateMSI(newToken, result.json)
-            MSIResult.Failure -> updateWorkStatus(R.string.unable_to_download_content_try_again_later)
-        }.exhaustive
-    }
-
-    @WorkerThread
-    private fun downloadMSI(newToken: String) {
-        updateWorkStatus(R.string.updating_content)
-        when (val result = MSIService.downloadMSI()) {
-            is MSIResult.Success -> updateMSI(newToken, result.json)
-            MSIResult.Failure -> updateWorkStatus(R.string.unable_to_download_content_try_again_later)
-        }.exhaustive
+    private fun downloadMSI(block: (Result<JSONObject, Exception>) -> Unit) {
+        val result = MSIService.downloadMSI()
+        block.invoke(result)
     }
 
     private fun updateMSI(newToken: String, json: JSONObject) {
@@ -118,8 +109,7 @@ class BootstrapViewModel : ViewModel() {
         preferences.setMSIToken(newToken)
         moveToHomeScreen()
     }
-
-
+    
     @WorkerThread
     private fun updateWorkStatus(@StringRes resource: Int) = postMainThread {
         replyAction.value = ReplyAction.UpdateWorkStatus(resource)

@@ -30,29 +30,27 @@ object MSIService {
     }
 
     @WorkerThread
-    fun downloadMSI() : MSIResult {
+    fun downloadMSI() : Result<JSONObject, Exception> {
         val service : FileService by inject(FileService::class.java)
         val call = service.getMasterSearchIndex()
-        val response = call.execute()
-
-        if (response.isSuccessful) {
-            response.body()?.string()?.let {
-                val json =  JSONObject(it)
-                return MSIResult.Success(json)
+        try {
+            val response = call.execute()
+            if (response.isSuccessful) {
+                response.body()?.string()?.let {
+                    val json =  JSONObject(it)
+                    return Result.Success(json)
+                }
             }
+        } catch (e: Exception) {
+            return Result.Failure(e)
         }
-        return MSIResult.Failure
+        return Result.Failure(wrapException(ServiceCallError.Unknown))
     }
 
     private fun wrapException(error: ServiceCallError) : Exception {
         return Exception(error.toString())
     }
 
-}
-
-sealed class MSIResult {
-    data class Success(val json: JSONObject) : MSIResult()
-    object Failure : MSIResult()
 }
 
 sealed class Result<out T, out E> {

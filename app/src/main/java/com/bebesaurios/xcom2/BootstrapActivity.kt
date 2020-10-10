@@ -8,6 +8,7 @@ import com.bebesaurios.xcom2.bootstrap.BootstrapViewModel
 import com.bebesaurios.xcom2.bootstrap.InputAction
 import com.bebesaurios.xcom2.bootstrap.ReplyAction
 import com.bebesaurios.xcom2.util.exhaustive
+import kotlinx.android.synthetic.main.bootstrap_activity.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
@@ -25,7 +26,9 @@ class BootstrapActivity : AppCompatActivity() {
         bootstrapViewModel.reply().observe(this, Observer {
             it?.let {action ->
                 when (action) {
-                    is ReplyAction.UpdateWorkStatus -> {}
+                    is ReplyAction.UpdateWorkStatus -> {
+                        statusText.setText(action.stringRes)
+                    }
                     ReplyAction.GoToHome -> {
                         val intent = Intent(this, MainActivity::class.java)
                         startActivity(intent)
