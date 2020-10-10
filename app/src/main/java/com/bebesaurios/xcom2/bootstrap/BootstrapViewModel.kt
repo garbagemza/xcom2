@@ -109,6 +109,7 @@ class BootstrapViewModel : ViewModel() {
         preferences.setMSIToken(newToken)
         moveToHomeScreen()
     }
+
     
     @WorkerThread
     private fun updateWorkStatus(@StringRes resource: Int) = postMainThread {
