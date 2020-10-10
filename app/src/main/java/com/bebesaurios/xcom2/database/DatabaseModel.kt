@@ -41,7 +41,7 @@ class DatabaseModel(mainJson: JSONObject) {
         for (i in 0 until articlesArray.length()) {
             val articleObject = articlesArray.getJSONObject(i)
             val key = articleObject.getString("key")
-            val articleString = articleObject.getString("article")
+            val articleString = articleObject.getString("content")
             val article = Article(key, articleString)
             list.add(article)
         }
@@ -54,7 +54,7 @@ class DatabaseModel(mainJson: JSONObject) {
             val translationObject = translationsArray.getJSONObject(i)
             val key = translationObject.getString("key")
             val locale = translationObject.getString("locale")
-            val translation = translationObject.getString("translation")
+            val translation = translationObject.getString("content")
             val articleTranslation = ArticleTranslation(key, locale, translation)
             list.add(articleTranslation)
         }
@@ -76,6 +76,6 @@ class DatabaseModel(mainJson: JSONObject) {
 }
 
 data class Keyword(val key: String, val word: String)
-data class Article(val key: String, val article: String)
-data class ArticleTranslation(val key: String, val locale: String, val translation: String)
+data class Article(val key: String, val contentFile: String)
+data class ArticleTranslation(val key: String, val locale: String, val contentFile: String)
 data class Search(val keyword: String, val article: String, val weight: Int)

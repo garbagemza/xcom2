@@ -14,7 +14,7 @@ class DatabaseFeeder(private val dbModel: DatabaseModel, private val db: AppData
             removeAllEntities()
 
             dbModel.articles.forEach { article ->
-                db.articleDao().insert(ArticleEntity(0, article.key, article.article))
+                db.articleDao().insert(ArticleEntity(0, article.key, article.contentFile))
             }
 
             dbModel.keywords.forEach { keyword ->
@@ -26,7 +26,7 @@ class DatabaseFeeder(private val dbModel: DatabaseModel, private val db: AppData
             }
 
             dbModel.translations.forEach {
-                db.articleTranslationDao().insert(ArticleTranslationEntity(id = 0, key = it.key, locale = it.locale, translation = it.translation))
+                db.articleTranslationDao().insert(ArticleTranslationEntity(id = 0, key = it.key, locale = it.locale, translation = it.contentFile))
             }
         }
         db.close()

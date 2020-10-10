@@ -18,6 +18,7 @@ import org.json.JSONException
 import org.json.JSONObject
 import org.koin.core.parameter.parametersOf
 import org.koin.java.KoinJavaComponent.inject
+import java.util.*
 import kotlin.concurrent.thread
 
 class BootstrapViewModel : ViewModel() {
@@ -37,7 +38,7 @@ class BootstrapViewModel : ViewModel() {
             getMetadata { result ->
                 when (result) {
                     is Result.Success -> successDownloadingMetadata(result.value)
-                    is Result.Failure -> failedGettingNewToken()
+                    is Result.Failure -> failedDownloadProcess()
                 }.exhaustive
             }
         }
@@ -53,16 +54,7 @@ class BootstrapViewModel : ViewModel() {
         if (newToken.isNotEmpty()) {
             successGettingNewToken(newToken)
         } else
-            failedGettingNewToken()
-    }
-
-    private fun failedGettingNewToken() {
-        val preferences: Preferences by inject(Preferences::class.java)
-        val currentToken = preferences.getMSIToken()
-        if (currentToken.isEmpty())
-            updateWorkStatus(R.string.unable_to_download_content_try_again_later)
-        else
-            moveToHomeScreen()
+            failedDownloadProcess()
     }
 
     private fun successGettingNewToken(newToken: String) {
@@ -87,11 +79,10 @@ class BootstrapViewModel : ViewModel() {
     @WorkerThread
     private fun tokenNeedsUpdate(currentToken: String, newToken: String) {
         updateWorkStatus(if (currentToken.isEmpty()) R.string.downloading_new_content else R.string.updating_content)
-
         downloadMSI { result ->
             when (result) {
-                is Result.Success -> updateMSI(newToken, result.value)
-                is Result.Failure -> updateWorkStatus(R.string.unable_to_download_content_try_again_later)
+                is Result.Success -> successDownloadMSI(newToken, result.value)
+                is Result.Failure -> failedDownloadProcess()
             }.exhaustive
         }
     }
@@ -101,8 +92,43 @@ class BootstrapViewModel : ViewModel() {
         block.invoke(result)
     }
 
-    private fun updateMSI(newToken: String, json: JSONObject) {
+    private fun successDownloadMSI(newToken: String, json: JSONObject) {
+        updateWorkStatus(R.string.downloading_index)
+
         val model = DatabaseModel(json)
+
+        val article = model.articles.firstOrNull { it.key == "index" }
+        val articleTranslation = model.translations.firstOrNull { it.key == "index" && it.locale == Locale.getDefault().toString() }
+
+        val indexFilename = when {
+            articleTranslation != null -> articleTranslation.contentFile
+            article != null -> article.contentFile
+            else -> "index.json"
+        }
+
+        downloadIndex(indexFilename) { result ->
+            when (result) {
+                is Result.Success -> updateMSI(newToken, model, result.value)
+                is Result.Failure -> failedDownloadProcess()
+            }
+        }
+    }
+
+    private fun downloadIndex(filename: String, block: (Result<JSONObject, Exception>) -> Unit) {
+        val result = MSIService.downloadPage(filename)
+        block.invoke(result)
+    }
+
+    private fun failedDownloadProcess() {
+        val preferences: Preferences by inject(Preferences::class.java)
+        val currentToken = preferences.getMSIToken()
+        if (currentToken.isEmpty())
+            updateWorkStatus(R.string.unable_to_download_content_try_again_later)
+        else
+            moveToHomeScreen()
+    }
+
+    private fun updateMSI(newToken: String, model: DatabaseModel, indexContent: JSONObject) {
         val feeder: DatabaseFeeder by inject(DatabaseFeeder::class.java) { parametersOf(model) }
         feeder.start()
         val preferences: Preferences by inject(Preferences::class.java)
@@ -110,7 +136,6 @@ class BootstrapViewModel : ViewModel() {
         moveToHomeScreen()
     }
 
-    
     @WorkerThread
     private fun updateWorkStatus(@StringRes resource: Int) = postMainThread {
         replyAction.value = ReplyAction.UpdateWorkStatus(resource)
@@ -124,6 +149,7 @@ class BootstrapViewModel : ViewModel() {
     fun reply() : LiveData<ReplyAction> = replyAction
 }
 
+data class IndexInfo()
 sealed class InputAction {
     object CheckData : InputAction()
 }

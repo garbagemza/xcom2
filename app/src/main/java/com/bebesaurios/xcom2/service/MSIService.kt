@@ -47,6 +47,23 @@ object MSIService {
         return Result.Failure(wrapException(ServiceCallError.Unknown))
     }
 
+    fun downloadPage(filename: String): Result<JSONObject, Exception> {
+        val service: FileService by inject(FileService::class.java)
+        val call = service.getPage(filename)
+        try {
+            val response = call.execute()
+            if (response.isSuccessful) {
+                response.body()?.string()?.let {
+                    val json = JSONObject(it)
+                    return Result.Success(json)
+                }
+            }
+        } catch (e: Exception) {
+            return Result.Failure(e)
+        }
+        return Result.Failure(wrapException(ServiceCallError.Unknown))
+    }
+
     private fun wrapException(error: ServiceCallError) : Exception {
         return Exception(error.toString())
     }

@@ -11,7 +11,12 @@ import com.bebesaurios.xcom2.database.entities.ArticleTranslationEntity
 import com.bebesaurios.xcom2.database.entities.KeywordEntity
 import com.bebesaurios.xcom2.database.entities.SearchEntity
 
-@Database(entities = [ArticleEntity::class, KeywordEntity::class, ArticleTranslationEntity::class, SearchEntity::class], version = 1, exportSchema = false)
+@Database(entities = [
+    ArticleEntity::class,
+    KeywordEntity::class,
+    ArticleTranslationEntity::class,
+    SearchEntity::class
+], version = 1, exportSchema = false)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun articleDao() : ArticleDao
     abstract fun keywordDao() : KeywordDao
