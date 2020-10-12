@@ -6,8 +6,6 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
-import com.bebesaurios.xcom2.database.DatabaseFeeder
-import org.koin.android.ext.android.inject
 import java.util.*
 
 

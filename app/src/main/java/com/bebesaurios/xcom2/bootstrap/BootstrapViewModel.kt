@@ -6,19 +6,16 @@ import androidx.annotation.WorkerThread
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import com.bebesaurios.xcom2.R
-import com.bebesaurios.xcom2.database.DatabaseFeeder
 import com.bebesaurios.xcom2.database.DatabaseModel
+import com.bebesaurios.xcom2.database.Repository
 import com.bebesaurios.xcom2.service.MSIService
 import com.bebesaurios.xcom2.service.Result
-import com.bebesaurios.xcom2.util.Preferences
 import com.bebesaurios.xcom2.util.SingleLiveEvent
 import com.bebesaurios.xcom2.util.exhaustive
 import com.bebesaurios.xcom2.util.postMainThread
 import org.json.JSONException
 import org.json.JSONObject
-import org.koin.core.parameter.parametersOf
 import org.koin.java.KoinJavaComponent.inject
-import java.util.*
 import kotlin.concurrent.thread
 
 class BootstrapViewModel : ViewModel() {
@@ -58,8 +55,8 @@ class BootstrapViewModel : ViewModel() {
     }
 
     private fun successGettingNewToken(newToken: String) {
-        val preferences: Preferences by inject(Preferences::class.java)
-        val currentToken = preferences.getMSIToken()
+        val repository: Repository by inject(Repository::class.java)
+        val currentToken = repository.getMSIToken()
         if (currentToken != newToken) {
             tokenNeedsUpdate(currentToken, newToken)
         } else
@@ -97,31 +94,25 @@ class BootstrapViewModel : ViewModel() {
 
         val model = DatabaseModel(json)
 
-        val article = model.articles.firstOrNull { it.key == "index" }
-        val articleTranslation = model.translations.firstOrNull { it.key == "index" && it.locale == Locale.getDefault().toString() }
-
-        val indexFilename = when {
-            articleTranslation != null -> articleTranslation.contentFile
-            article != null -> article.contentFile
-            else -> "index.json"
-        }
-
-        downloadIndex(indexFilename) { result ->
+        downloadIndex { result ->
             when (result) {
-                is Result.Success -> updateMSI(newToken, model, result.value)
+                is Result.Success -> {
+                    updateMSI(newToken, model, result.value)
+                    moveToHomeScreen()
+                }
                 is Result.Failure -> failedDownloadProcess()
             }
         }
     }
 
-    private fun downloadIndex(filename: String, block: (Result<JSONObject, Exception>) -> Unit) {
-        val result = MSIService.downloadPage(filename)
+    private fun downloadIndex(block: (Result<JSONObject, Exception>) -> Unit) {
+        val result = MSIService.downloadPage("index.json")
         block.invoke(result)
     }
 
     private fun failedDownloadProcess() {
-        val preferences: Preferences by inject(Preferences::class.java)
-        val currentToken = preferences.getMSIToken()
+        val repository: Repository by inject(Repository::class.java)
+        val currentToken = repository.getMSIToken()
         if (currentToken.isEmpty())
             updateWorkStatus(R.string.unable_to_download_content_try_again_later)
         else
@@ -129,11 +120,8 @@ class BootstrapViewModel : ViewModel() {
     }
 
     private fun updateMSI(newToken: String, model: DatabaseModel, indexContent: JSONObject) {
-        val feeder: DatabaseFeeder by inject(DatabaseFeeder::class.java) { parametersOf(model) }
-        feeder.start()
-        val preferences: Preferences by inject(Preferences::class.java)
-        preferences.setMSIToken(newToken)
-        moveToHomeScreen()
+        val repository : Repository by inject(Repository::class.java)
+        repository.updateConfiguration(newToken, model, indexContent)
     }
 
     @WorkerThread
@@ -149,7 +137,6 @@ class BootstrapViewModel : ViewModel() {
     fun reply() : LiveData<ReplyAction> = replyAction
 }
 
-data class IndexInfo()
 sealed class InputAction {
     object CheckData : InputAction()
 }

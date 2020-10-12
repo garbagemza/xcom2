@@ -6,18 +6,15 @@ import org.json.JSONObject
 class DatabaseModel(mainJson: JSONObject) {
     val keywords: List<Keyword>
     val articles: List<Article>
-    val translations: List<ArticleTranslation>
     val searches: List<Search>
 
     init {
         val keywordsArray = mainJson.getJSONArray("keywords")
         val articlesArray = mainJson.getJSONArray("articles")
-        val translationsArray = mainJson.getJSONArray("articleTranslations")
         val searchesArray = mainJson.getJSONArray("search")
 
         keywords = buildKeywords(keywordsArray)
         articles = buildArticles(articlesArray)
-        translations = buildArticleTranslations(translationsArray)
         searches = buildSearches(searchesArray)
     }
 
@@ -48,19 +45,6 @@ class DatabaseModel(mainJson: JSONObject) {
         return list
     }
 
-    private fun buildArticleTranslations(translationsArray: JSONArray): List<ArticleTranslation> {
-        val list = mutableListOf<ArticleTranslation>()
-        for (i in 0 until translationsArray.length()) {
-            val translationObject = translationsArray.getJSONObject(i)
-            val key = translationObject.getString("key")
-            val locale = translationObject.getString("locale")
-            val translation = translationObject.getString("content")
-            val articleTranslation = ArticleTranslation(key, locale, translation)
-            list.add(articleTranslation)
-        }
-        return list
-    }
-
     private fun buildSearches(searchesArray: JSONArray): List<Search> {
         val list = mutableListOf<Search>()
         for (i in 0 until searchesArray.length()) {
@@ -77,5 +61,4 @@ class DatabaseModel(mainJson: JSONObject) {
 
 data class Keyword(val key: String, val word: String)
 data class Article(val key: String, val contentFile: String)
-data class ArticleTranslation(val key: String, val locale: String, val contentFile: String)
 data class Search(val keyword: String, val article: String, val weight: Int)

@@ -4,9 +4,7 @@ import android.content.Context
 import androidx.room.Room
 import com.bebesaurios.xcom2.bootstrap.BootstrapViewModel
 import com.bebesaurios.xcom2.database.AppDatabase
-import com.bebesaurios.xcom2.database.Database
-import com.bebesaurios.xcom2.database.DatabaseFeeder
-import com.bebesaurios.xcom2.database.DatabaseModel
+import com.bebesaurios.xcom2.database.Repository
 import com.bebesaurios.xcom2.service.retrofit.FileService
 import com.bebesaurios.xcom2.util.Preferences
 import org.koin.android.ext.koin.androidApplication
@@ -24,8 +22,7 @@ val persistenceModule = module {
             .build()
     }
 
-    single { (model: DatabaseModel) -> DatabaseFeeder(model, get()) }
-    single { Database(get()) }
+    single { Repository(get()) }
 
     // for preferences injection
     single { androidApplication().getSharedPreferences("preferences", Context.MODE_PRIVATE) }
