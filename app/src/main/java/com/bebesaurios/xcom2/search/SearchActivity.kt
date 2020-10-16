@@ -1,11 +1,11 @@
-package com.bebesaurios.xcom2
+package com.bebesaurios.xcom2.search
 
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import androidx.appcompat.app.AppCompatActivity
+import com.bebesaurios.xcom2.R
 import com.bebesaurios.xcom2.database.Repository
-import com.bebesaurios.xcom2.search.searchResultRow
 import kotlinx.android.synthetic.main.search_activity.*
 import org.koin.android.ext.android.inject
 

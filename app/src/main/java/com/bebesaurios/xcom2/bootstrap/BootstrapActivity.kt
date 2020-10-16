@@ -4,7 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
-import com.bebesaurios.xcom2.MainActivity
+import com.bebesaurios.xcom2.main.MainActivity
 import com.bebesaurios.xcom2.R
 import com.bebesaurios.xcom2.util.exhaustive
 import kotlinx.android.synthetic.main.bootstrap_activity.*

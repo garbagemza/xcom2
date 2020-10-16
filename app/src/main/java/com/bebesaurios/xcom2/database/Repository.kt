@@ -15,6 +15,10 @@ class Repository(private val db: AppDatabase) {
         return db.configurationDao().getConfiguration("master")?.token ?: ""
     }
 
+    fun getPageContents(articleKey: String): String? {
+        return db.articleContentDao().get(articleKey)?.content
+    }
+
     fun updateConfiguration(newToken: String, model: DatabaseModel, indexContent: JSONObject) {
         db.runInTransaction {
 

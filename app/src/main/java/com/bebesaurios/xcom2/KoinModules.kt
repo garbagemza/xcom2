@@ -5,6 +5,7 @@ import androidx.room.Room
 import com.bebesaurios.xcom2.bootstrap.BootstrapViewModel
 import com.bebesaurios.xcom2.database.AppDatabase
 import com.bebesaurios.xcom2.database.Repository
+import com.bebesaurios.xcom2.main.page.PageViewModel
 import com.bebesaurios.xcom2.service.retrofit.FileService
 import com.bebesaurios.xcom2.util.Preferences
 import org.koin.android.ext.koin.androidApplication
@@ -28,9 +29,8 @@ val persistenceModule = module {
     single { androidApplication().getSharedPreferences("preferences", Context.MODE_PRIVATE) }
     single { Preferences(get()) }
 
-    viewModel {
-        BootstrapViewModel()
-    }
+    viewModel { BootstrapViewModel() }
+    viewModel { PageViewModel() }
 }
 
 val networkModule = module {

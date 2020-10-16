@@ -1,8 +1,6 @@
-package com.bebesaurios.xcom2
+package com.bebesaurios.xcom2.util
 
-import android.content.Context
 import android.content.res.AssetManager
-import android.content.res.loader.AssetsProvider
 import android.util.Log
 import java.io.ByteArrayOutputStream
 import java.io.IOException
