@@ -1,8 +1,6 @@
 package com.bebesaurios.xcom2.search
 
 import android.content.Context
-import android.view.View
-import android.widget.FrameLayout
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.airbnb.epoxy.*
 import com.bebesaurios.xcom2.R

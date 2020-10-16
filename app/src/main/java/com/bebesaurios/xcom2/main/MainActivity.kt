@@ -32,7 +32,8 @@ class MainActivity : BaseActivity() {
         pageViewModel.reply().observe(this, { action ->
             action?.let {
                 when (it) {
-                    is ReplyAction.LoadPage -> loadPage(it.articleKey)
+                    is ReplyAction.OpenNewPage -> loadPage(it.articleKey)
+                    is ReplyAction.RenderPage -> {}
                 }.exhaustive
             }
         })
