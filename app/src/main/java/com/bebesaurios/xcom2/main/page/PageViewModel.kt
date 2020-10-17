@@ -7,6 +7,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.airbnb.epoxy.EpoxyModel
 import com.bebesaurios.xcom2.database.Repository
+import com.bebesaurios.xcom2.main.page.views.TitleRowModel_
 import com.bebesaurios.xcom2.search.SearchResultRowModel_
 import com.bebesaurios.xcom2.util.exhaustive
 import com.bebesaurios.xcom2.util.postMainThread
@@ -63,16 +64,16 @@ class PageViewModel : ViewModel() {
         return list
     }
 
-    private fun buildTitleRow(json: JSONObject): SearchResultRowModel_ {
+    private fun buildTitleRow(json: JSONObject): EpoxyModel<*> {
         val id = json.getString("id")
         val value = json.getString("value")
 
-        return SearchResultRowModel_()
+        return TitleRowModel_()
             .id(id)
             .text(value)
     }
 
-    private fun buildParagraphRow(json: JSONObject): SearchResultRowModel_ {
+    private fun buildParagraphRow(json: JSONObject): EpoxyModel<*> {
         return SearchResultRowModel_()
             .id(json.getString("id"))
             .text(json.getString("value"))

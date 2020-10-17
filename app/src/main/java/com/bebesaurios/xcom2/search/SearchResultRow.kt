@@ -19,4 +19,3 @@ class SearchResultRow(context: Context) : ConstraintLayout(context) {
     }
 
 }
-
