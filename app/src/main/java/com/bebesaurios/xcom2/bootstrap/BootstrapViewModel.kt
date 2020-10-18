@@ -101,13 +101,13 @@ class BootstrapViewModel : ViewModel() {
 
     private fun buildUpdates(configurations: List<Configuration>, metas: List<DownloadContext>): List<UpdateContext> {
         val list = mutableListOf<UpdateContext>()
-        val lookup = metas.associateBy { it.key }
+        val lookup = configurations.associateBy { it.key }
 
-        configurations.forEach { entry ->
+        metas.forEach { entry ->
             val key = entry.key
-            val config = entry.config!!
-
-            val json = lookup.getValue(key).json!!
+            val configuration = lookup.getValue(key)
+            val config = configuration.config!!
+            val json = entry.json!!
             val newToken = json.getString("updated")
             list.add(UpdateContext(key, newToken, config.token))
         }
