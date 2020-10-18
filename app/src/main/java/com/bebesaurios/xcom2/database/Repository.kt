@@ -11,16 +11,24 @@ class Repository(private val db: AppDatabase) {
         return db.searchDao().find(likeArg)
     }
 
-    fun getMSIToken() : String {
-        return db.configurationDao().getConfiguration("master")?.token ?: ""
+    fun getConfiguration(key: String): ConfigurationEntity? {
+        return db.configurationDao().getConfiguration(key)
     }
 
     fun getPageContents(articleKey: String): String? {
         return db.articleContentDao().get(articleKey)?.content
     }
 
-    fun updateConfiguration(newToken: String, model: DatabaseModel, indexContent: JSONObject) {
+    fun saveConfiguration(key: String, json: JSONObject, newToken: String) {
+        when (key) {
+            "master" -> saveMasterConfiguration(key, json, newToken)
+                else -> savePageConfiguration(key, json, newToken)
+        }
+    }
+
+    private fun saveMasterConfiguration(key: String, json: JSONObject, newToken: String) {
         db.runInTransaction {
+            val model = DatabaseModel(json)
 
             db.apply {
                 articleDao().deleteAll()
@@ -40,11 +48,22 @@ class Repository(private val db: AppDatabase) {
                 db.searchDao().insert(SearchEntity(0, search.keyword, search.article, search.weight))
             }
 
-            val index = ArticleContentEntity( "index", indexContent.toString())
-            db.articleContentDao().insert(index)
-
-            val configuration = ConfigurationEntity("master", newToken)
+            val configuration = ConfigurationEntity(key, newToken)
             db.configurationDao().insert(configuration)
         }
+    }
+
+    private fun savePageConfiguration(key: String, json: JSONObject, newToken: String) {
+        db.runInTransaction {
+            val pageContent = ArticleContentEntity( key, json.toString())
+            db.articleContentDao().insert(pageContent)
+
+            val configuration = ConfigurationEntity(key, newToken)
+            db.configurationDao().insert(configuration)
+        }
+    }
+
+    private fun getUpdatedToken(metadata: JSONObject): String {
+        return metadata.getString("updated")
     }
 }

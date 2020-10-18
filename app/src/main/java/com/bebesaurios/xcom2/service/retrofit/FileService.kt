@@ -13,6 +13,9 @@ interface FileService {
     @GET("MSI.json?alt=media")
     fun getMasterSearchIndex(): Call<ResponseBody>
 
-    @GET("pages%2F{name}?alt=media")
-    fun getPage(@Path("name") filename: String): Call<ResponseBody>
+    @GET("pages%2F{key}.json")
+    fun getPageMetadata(@Path("key") key: String) : Call<ResponseBody>
+
+    @GET("pages%2F{key}.json?alt=media")
+    fun getPage(@Path("key") key: String): Call<ResponseBody>
 }

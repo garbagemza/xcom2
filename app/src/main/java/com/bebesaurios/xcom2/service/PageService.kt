@@ -3,14 +3,32 @@ package com.bebesaurios.xcom2.service
 import androidx.annotation.WorkerThread
 import com.bebesaurios.xcom2.service.retrofit.FileService
 import org.json.JSONObject
-import org.koin.java.KoinJavaComponent.inject
+import org.koin.java.KoinJavaComponent
 
-object MSIService : CommonService() {
+object PageService : CommonService() {
 
     @WorkerThread
-    fun getMSIMetadata() : Result<JSONObject, Exception> {
-        val service : FileService by inject(FileService::class.java)
-        val call = service.getMasterSearchIndexMetadata()
+    fun downloadPage(key: String): Result<JSONObject, Exception> {
+        val service: FileService by KoinJavaComponent.inject(FileService::class.java)
+        val call = service.getPage(key)
+        try {
+            val response = call.execute()
+            if (response.isSuccessful) {
+                response.body()?.string()?.let {
+                    val json = JSONObject(it)
+                    return Result.Success(json)
+                }
+            }
+        } catch (e: Exception) {
+            return Result.Failure(e)
+        }
+        return Result.Failure(wrapException(ServiceCallError.Unknown))
+    }
+
+    @WorkerThread
+    fun getPageMetadata(key: String): Result<JSONObject, Exception> {
+        val service : FileService by KoinJavaComponent.inject(FileService::class.java)
+        val call = service.getPageMetadata(key)
         try {
             val response = call.execute()
             if (response.isSuccessful) {
@@ -25,21 +43,4 @@ object MSIService : CommonService() {
         return Result.Failure(wrapException(ServiceCallError.Unknown))
     }
 
-    @WorkerThread
-    fun downloadMSI() : Result<JSONObject, Exception> {
-        val service : FileService by inject(FileService::class.java)
-        val call = service.getMasterSearchIndex()
-        try {
-            val response = call.execute()
-            if (response.isSuccessful) {
-                response.body()?.string()?.let {
-                    val json =  JSONObject(it)
-                    return Result.Success(json)
-                }
-            }
-        } catch (e: Exception) {
-            return Result.Failure(e)
-        }
-        return Result.Failure(wrapException(ServiceCallError.Unknown))
-    }
 }
