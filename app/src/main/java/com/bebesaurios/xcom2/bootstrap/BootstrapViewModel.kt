@@ -58,9 +58,10 @@ class BootstrapViewModel : ViewModel() {
         proceedSavingNewConfigurations(requiredConfigurationResults)
 
         val deferredExistingConfigurationsMetadata = existingConfigurations.map { async { downloadMetadata(it.key) } }
-        val existingConfigurationsMetadata = deferredExistingConfigurationsMetadata.awaitAll().filter { it.json != null }
+        val existingConfigurationsMetadata = deferredExistingConfigurationsMetadata.awaitAll()
+        val successfulMetadata = existingConfigurationsMetadata.filter { it.json != null }
 
-        val updates = buildUpdates(existingConfigurations, existingConfigurationsMetadata)
+        val updates = buildUpdates(existingConfigurations, successfulMetadata)
         val staleUpdates = updates.filter { it.existingToken != it.newToken }
 
         val deferredStaleUpdates = staleUpdates.map { async { download(it.key) } }
