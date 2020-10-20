@@ -1,7 +1,9 @@
 <resources>
-    <dimen name="regular_margin">16dp</dimen>
+    <!-- font sizes -->
+    <dimen name="font_normal">15sp</dimen>
 
+    <!-- margin between elements -->
+    <dimen name="spacing_normal">16dp</dimen>
 
-    <dimen name="fab_margin">@dimen/regular_margin</dimen>
 
 </resources>

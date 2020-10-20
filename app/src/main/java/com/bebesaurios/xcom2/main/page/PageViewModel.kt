@@ -7,8 +7,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.airbnb.epoxy.EpoxyModel
 import com.bebesaurios.xcom2.database.Repository
+import com.bebesaurios.xcom2.main.page.views.ParagraphRowModel_
 import com.bebesaurios.xcom2.main.page.views.TitleRowModel_
-import com.bebesaurios.xcom2.search.SearchResultRowModel_
 import com.bebesaurios.xcom2.util.exhaustive
 import com.bebesaurios.xcom2.util.postMainThread
 import org.json.JSONException
@@ -74,7 +74,7 @@ class PageViewModel : ViewModel() {
     }
 
     private fun buildParagraphRow(json: JSONObject): EpoxyModel<*> {
-        return SearchResultRowModel_()
+        return ParagraphRowModel_()
             .id(json.getString("id"))
             .text(json.getString("value"))
     }

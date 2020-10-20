@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="TextAppearance.AppCompat.Title" parent="TextAppearance.AppCompat">
+        <item name="android:textColor">@color/title</item>
+        <item name="android:textSize">@dimen/font_normal</item>
+    </style>
+
+    <style name="TextAppearance.AppCompat.Normal" parent="TextAppearance.AppCompat">
+        <item name="android:textColor">@color/main_text_color</item>
+        <item name="android:textSize">@dimen/font_normal</item>
+    </style>
+</resources>
