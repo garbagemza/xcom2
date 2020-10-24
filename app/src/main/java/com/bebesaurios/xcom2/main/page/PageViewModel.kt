@@ -5,12 +5,11 @@ import androidx.annotation.WorkerThread
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.airbnb.epoxy.EpoxyModel
 import com.bebesaurios.xcom2.database.Repository
-import com.bebesaurios.xcom2.main.page.views.ImagePushRowModel_
-import com.bebesaurios.xcom2.main.page.views.ParagraphRowModel_
-import com.bebesaurios.xcom2.main.page.views.PushProp
-import com.bebesaurios.xcom2.main.page.views.TitleRowModel_
+import com.bebesaurios.xcom2.main.page.model.ImagePushRow
+import com.bebesaurios.xcom2.main.page.model.Model
+import com.bebesaurios.xcom2.main.page.model.ParagraphRow
+import com.bebesaurios.xcom2.main.page.model.TitleRow
 import com.bebesaurios.xcom2.util.exhaustive
 import com.bebesaurios.xcom2.util.postMainThread
 import org.json.JSONException
@@ -45,8 +44,8 @@ class PageViewModel : ViewModel() {
     }
 
     @WorkerThread
-    private fun buildModelFromJson(content: JSONObject): List<EpoxyModel<*>> {
-        val list = mutableListOf<EpoxyModel<*>>()
+    private fun buildModelFromJson(content: JSONObject): List<Model> {
+        val list = mutableListOf<Model>()
         try {
             val rowsArray = content.getJSONArray("rows")
             for (i in 0 until rowsArray.length()) {
@@ -67,36 +66,25 @@ class PageViewModel : ViewModel() {
         return list
     }
 
-    private fun buildImagePushRow(json: JSONObject): EpoxyModel<out Any> {
-        val id = json.getString("id")
+    private fun buildImagePushRow(json: JSONObject): Model {
         val text = json.getString("text")
         val image = json.getString("image")
         val page = json.getString("page")
-        return ImagePushRowModel_()
-            .id(id)
-            .text(text)
-            .pushProp(PushProp(page))
-            .image(image)
-            .clickListener { model, _, _, _ ->
-                val pushProp = model.pushProp()
-                replyAction.value = ReplyAction.NavigatePage(pushProp.page)
-            }
+        return ImagePushRow(text, image, page)
+//            .image(image)
+//            .clickListener { model, _, _, _ ->
+//                val pushProp = model.pushProp()
+//                replyAction.value = ReplyAction.NavigatePage(pushProp.page)
+//            }
     }
 
-    private fun buildTitleRow(json: JSONObject): EpoxyModel<*> {
-        val id = json.getString("id")
+    private fun buildTitleRow(json: JSONObject): Model {
         val value = json.getString("value")
-
-        return TitleRowModel_()
-            .id(id)
-            .text(value)
+        return TitleRow(value)
     }
 
-    private fun buildParagraphRow(json: JSONObject): EpoxyModel<*> {
-        return ParagraphRowModel_()
-            .id(json.getString("id"))
-            .text(json.getString("value"))
-
+    private fun buildParagraphRow(json: JSONObject): Model {
+        return ParagraphRow(json.getString("value"))
     }
 
     @MainThread
@@ -129,5 +117,5 @@ sealed class InputAction {
 sealed class ReplyAction {
     data class OpenIndexPage(val articleKey: String) : ReplyAction()
     data class NavigatePage(val articleKey: String) : ReplyAction()
-    data class RenderPage(val model: List<EpoxyModel<*>>) : ReplyAction()
+    data class RenderPage(val model: List<Model>) : ReplyAction()
 }

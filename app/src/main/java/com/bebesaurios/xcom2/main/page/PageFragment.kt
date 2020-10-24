@@ -36,7 +36,10 @@ class PageFragment : Fragment() {
                 when(it) {
                     is ReplyAction.OpenIndexPage -> {}
                     is ReplyAction.NavigatePage -> loadPage(it.articleKey)
-                    is ReplyAction.RenderPage -> epoxyRecyclerView.setModels(it.model)
+                    is ReplyAction.RenderPage -> {
+                        val adapter = PageAdapter(it.model)
+                        recyclerView.adapter = adapter
+                    }
                 }.exhaustive
             }
         })
