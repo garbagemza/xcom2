@@ -7,6 +7,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.airbnb.epoxy.EpoxyModel
 import com.bebesaurios.xcom2.database.Repository
+import com.bebesaurios.xcom2.main.page.views.ImagePushRowModel_
 import com.bebesaurios.xcom2.main.page.views.ParagraphRowModel_
 import com.bebesaurios.xcom2.main.page.views.TitleRowModel_
 import com.bebesaurios.xcom2.util.exhaustive
@@ -53,7 +54,8 @@ class PageViewModel : ViewModel() {
                 val row = when (type) {
                     "TitleRow" -> buildTitleRow(rowJson)
                     "ParagraphRow" -> buildParagraphRow(rowJson)
-                    else -> throw RuntimeException("Row type not found.")
+                    "ImagePushRow" -> buildImagePushRow(rowJson)
+                    else -> throw JSONException("row type not found")
                 }.exhaustive
                 list.add(row)
             }
@@ -62,6 +64,16 @@ class PageViewModel : ViewModel() {
             e.printStackTrace()
         }
         return list
+    }
+
+    private fun buildImagePushRow(json: JSONObject): EpoxyModel<out Any> {
+        val id = json.getString("id")
+        val text = json.getString("text")
+        val image = json.getString("image")
+        val page = json.getString("page")
+        return ImagePushRowModel_()
+            .id(id)
+            .text(text)
     }
 
     private fun buildTitleRow(json: JSONObject): EpoxyModel<*> {

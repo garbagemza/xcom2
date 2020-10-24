@@ -4,7 +4,7 @@
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/title_accent</item>
         <item name="colorPrimaryDark">@color/background_color</item>
-        <item name="colorAccent">@color/title_accent</item>
+        <item name="colorAccent">@color/title</item>
     </style>
 
     <style name="AppTheme.NoActionBar">

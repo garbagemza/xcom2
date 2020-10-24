@@ -6,4 +6,9 @@
     <dimen name="spacing_normal">16dp</dimen>
 
 
+    <!-- row height sizes -->
+    <dimen name="row_height_normal">112dp</dimen>
+
+    <dimen name="row_image_normal">64dp</dimen>
+
 </resources>
