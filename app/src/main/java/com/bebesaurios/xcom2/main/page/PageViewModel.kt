@@ -9,6 +9,7 @@ import com.airbnb.epoxy.EpoxyModel
 import com.bebesaurios.xcom2.database.Repository
 import com.bebesaurios.xcom2.main.page.views.ImagePushRowModel_
 import com.bebesaurios.xcom2.main.page.views.ParagraphRowModel_
+import com.bebesaurios.xcom2.main.page.views.PushProp
 import com.bebesaurios.xcom2.main.page.views.TitleRowModel_
 import com.bebesaurios.xcom2.util.exhaustive
 import com.bebesaurios.xcom2.util.postMainThread
@@ -74,6 +75,12 @@ class PageViewModel : ViewModel() {
         return ImagePushRowModel_()
             .id(id)
             .text(text)
+            .pushProp(PushProp(page))
+            .image(image)
+            .clickListener { model, _, _, _ ->
+                val pushProp = model.pushProp()
+                replyAction.value = ReplyAction.NavigatePage(pushProp.page)
+            }
     }
 
     private fun buildTitleRow(json: JSONObject): EpoxyModel<*> {
@@ -89,11 +96,12 @@ class PageViewModel : ViewModel() {
         return ParagraphRowModel_()
             .id(json.getString("id"))
             .text(json.getString("value"))
+
     }
 
     @MainThread
     private fun showIndex() {
-        replyAction.value = ReplyAction.OpenNewPage("index")
+        replyAction.value = ReplyAction.OpenIndexPage("index")
     }
 
     private fun getContentJson(articleKey: String): JSONObject? {
@@ -119,6 +127,7 @@ sealed class InputAction {
 }
 
 sealed class ReplyAction {
-    data class OpenNewPage(val articleKey: String) : ReplyAction()
+    data class OpenIndexPage(val articleKey: String) : ReplyAction()
+    data class NavigatePage(val articleKey: String) : ReplyAction()
     data class RenderPage(val model: List<EpoxyModel<*>>) : ReplyAction()
 }

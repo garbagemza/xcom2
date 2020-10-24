@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.bebesaurios.xcom2.R
 import com.bebesaurios.xcom2.util.exhaustive
+import com.bebesaurios.xcom2.util.replaceFragment
 import kotlinx.android.synthetic.main.page_fragment.*
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
@@ -33,17 +34,22 @@ class PageFragment : Fragment() {
         pageViewModel.reply().observe(viewLifecycleOwner, {
             it?.let {
                 when(it) {
-                    is ReplyAction.OpenNewPage -> {}
+                    is ReplyAction.OpenIndexPage -> {}
+                    is ReplyAction.NavigatePage -> loadPage(it.articleKey)
                     is ReplyAction.RenderPage -> epoxyRecyclerView.setModels(it.model)
                 }.exhaustive
             }
         })
     }
 
+    private fun loadPage(articleKey: String) {
+        val pageFragment = builder().setKey(articleKey).build()
+        replaceFragment(R.id.content, pageFragment, articleKey, null)
+    }
+
     private fun wrap(args: Bundle?) : Args {
         return Args(articleKey = args?.getString("articleKey", null) ?: "index")
     }
-
 }
 
 data class Args(val articleKey: String)

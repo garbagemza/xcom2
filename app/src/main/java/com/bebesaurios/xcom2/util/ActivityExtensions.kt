@@ -11,11 +11,3 @@ fun AppCompatActivity.addFragment(@IdRes res: Int, fragment: Fragment, fragmentT
         .disallowAddToBackStack()
         .commit()
 }
-
-fun AppCompatActivity.replaceFragment(@IdRes res: Int, fragment: Fragment, fragmentTag: String, backStackStateName: String?) {
-    supportFragmentManager
-        .beginTransaction()
-        .replace(res, fragment, fragmentTag)
-        .addToBackStack(backStackStateName)
-        .commit()
-}
