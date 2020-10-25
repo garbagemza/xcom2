@@ -13,6 +13,8 @@ data class SearchEntity(
     val keyword: String,
     @ColumnInfo(name = "article")
     val article: String,
+    @ColumnInfo(name = "title")
+    val title: String,
     @ColumnInfo(name = "weight")
     val weight: Int
 )

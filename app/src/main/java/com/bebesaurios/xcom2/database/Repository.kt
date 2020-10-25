@@ -6,9 +6,9 @@ import org.json.JSONObject
 
 class Repository(private val db: AppDatabase) {
 
-    fun findSearchResults(searchText: String) : List<SearchEntity> {
+    fun findSearchResults(searchText: String) : List<SearchResult> {
         val likeArg = "%$searchText%"
-        return db.searchDao().find(likeArg)
+        return db.searchDao().find(likeArg).map { SearchResult(it.title, it.article) }
     }
 
     fun getConfiguration(key: String): ConfigurationEntity? {
@@ -31,13 +31,8 @@ class Repository(private val db: AppDatabase) {
             val model = DatabaseModel(json)
 
             db.apply {
-                articleDao().deleteAll()
                 searchDao().deleteAll()
                 keywordDao().deleteAll()
-            }
-
-            model.articles.forEach { article ->
-                db.articleDao().insert(ArticleEntity(0, article.key, article.contentFile))
             }
 
             model.keywords.forEach { keyword ->
@@ -45,7 +40,7 @@ class Repository(private val db: AppDatabase) {
             }
 
             model.searches.forEach { search ->
-                db.searchDao().insert(SearchEntity(0, search.keyword, search.article, search.weight))
+                db.searchDao().insert(SearchEntity(0, search.keyword, search.article, search.title, search.weight))
             }
 
             val configuration = ConfigurationEntity(key, newToken)
@@ -62,8 +57,6 @@ class Repository(private val db: AppDatabase) {
             db.configurationDao().insert(configuration)
         }
     }
-
-    private fun getUpdatedToken(metadata: JSONObject): String {
-        return metadata.getString("updated")
-    }
 }
+
+data class SearchResult(val title: String, val articleKey: String)
