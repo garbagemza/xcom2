@@ -13,6 +13,7 @@ import com.bebesaurios.xcom2.main.page.ReplyAction
 import com.bebesaurios.xcom2.search.SearchActivity
 import com.bebesaurios.xcom2.util.addFragment
 import com.bebesaurios.xcom2.util.exhaustive
+import com.bebesaurios.xcom2.util.replaceFragment
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
@@ -33,10 +34,18 @@ class MainActivity : BaseActivity() {
             action?.let {
                 when (it) {
                     is ReplyAction.OpenIndexPage -> loadPage(it.articleKey)
+                    is ReplyAction.NavigatePage -> navigatePage(it.articleKey)
                     else -> {}
                 }.exhaustive
             }
         })
+    }
+
+    private fun navigatePage(articleKey: String) {
+        val page = PageFragment.builder()
+            .setKey(articleKey)
+            .build()
+        replaceFragment(R.id.content, page, articleKey)
     }
 
     private fun loadPage(articleKey: String) {

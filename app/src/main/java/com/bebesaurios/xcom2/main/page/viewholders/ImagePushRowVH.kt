@@ -9,6 +9,9 @@ class ImagePushRowVH(val parent: View) : PageViewHolder<ImagePushRow>(parent) {
 
     override fun bind(t: ImagePushRow) {
         parent.textView.text = t.text
+        parent.setOnClickListener {
+            t.clickListener.invoke(t)
+        }
     }
 }
 

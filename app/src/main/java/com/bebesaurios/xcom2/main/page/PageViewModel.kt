@@ -5,17 +5,19 @@ import androidx.annotation.WorkerThread
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.bebesaurios.xcom2.database.Repository
 import com.bebesaurios.xcom2.main.page.model.ImagePushRow
 import com.bebesaurios.xcom2.main.page.model.Model
 import com.bebesaurios.xcom2.main.page.model.ParagraphRow
 import com.bebesaurios.xcom2.main.page.model.TitleRow
 import com.bebesaurios.xcom2.util.exhaustive
-import com.bebesaurios.xcom2.util.postMainThread
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.json.JSONException
 import org.json.JSONObject
 import org.koin.java.KoinJavaComponent.inject
-import kotlin.concurrent.thread
 
 class PageViewModel : ViewModel() {
     private val replyAction = MutableLiveData<ReplyAction>()
@@ -23,23 +25,22 @@ class PageViewModel : ViewModel() {
     @MainThread
     fun handle(action: InputAction) {
         when (action) {
-            InputAction.ShowIndex -> showIndex()
-            is InputAction.BuildPage -> buildPage(action.articleKey)
+            InputAction.ShowIndex -> viewModelScope.launch { withContext(Dispatchers.Main) { showIndex() } }
+            is InputAction.BuildPage -> viewModelScope.launch { buildPage(action.articleKey) }
         }.exhaustive
     }
 
-    private fun buildPage(articleKey: String) {
-        thread {
-            val content = getContentJson(articleKey)
-            val model = if (content != null) {
-                buildModelFromJson(content)
-            } else null
+    @WorkerThread
+    private suspend fun buildPage(articleKey: String) = withContext(Dispatchers.IO) {
+        val content = getContentJson(articleKey)
+        val model = if (content != null) {
+            buildModelFromJson(content)
+        } else null
 
-            model?.let {
-                postMainThread {
-                    replyAction.value = ReplyAction.RenderPage(model)
-                }
-            }
+        if (model != null) {
+            withContext(Dispatchers.Main) { replyAction.value = ReplyAction.RenderPage(model) }
+        } else {
+
         }
     }
 
@@ -70,12 +71,9 @@ class PageViewModel : ViewModel() {
         val text = json.getString("text")
         val image = json.getString("image")
         val page = json.getString("page")
-        return ImagePushRow(text, image, page)
-//            .image(image)
-//            .clickListener { model, _, _, _ ->
-//                val pushProp = model.pushProp()
-//                replyAction.value = ReplyAction.NavigatePage(pushProp.page)
-//            }
+        return ImagePushRow(text, image, page) {
+            replyAction.value = ReplyAction.NavigatePage(it.page)
+        }
     }
 
     private fun buildTitleRow(json: JSONObject): Model {

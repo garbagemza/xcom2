@@ -35,7 +35,7 @@ class PageFragment : Fragment() {
             it?.let {
                 when(it) {
                     is ReplyAction.OpenIndexPage -> {}
-                    is ReplyAction.NavigatePage -> loadPage(it.articleKey)
+                    is ReplyAction.NavigatePage -> {}
                     is ReplyAction.RenderPage -> {
                         val adapter = PageAdapter(it.model)
                         recyclerView.adapter = adapter
@@ -43,11 +43,6 @@ class PageFragment : Fragment() {
                 }.exhaustive
             }
         })
-    }
-
-    private fun loadPage(articleKey: String) {
-        val pageFragment = builder().setKey(articleKey).build()
-        replaceFragment(R.id.content, pageFragment, articleKey, null)
     }
 
     private fun wrap(args: Bundle?) : Args {
