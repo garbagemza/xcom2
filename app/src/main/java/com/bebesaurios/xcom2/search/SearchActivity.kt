@@ -34,14 +34,14 @@ class SearchActivity : AppCompatActivity() {
     private fun updateModel(searchText: String) {
         val repository : Repository by inject()
         val results = repository.findSearchResults(searchText)
-        epoxyRecyclerView.withModels {
-            for (result in results) {
-                searchResultRow {
-                    id("searchResult ${result.id}")
-                    text(result.article)
-                }
-            }
-        }
+//        epoxyRecyclerView.withModels {
+//            for (result in results) {
+//                searchResultRow {
+//                    id("searchResult ${result.id}")
+//                    text(result.article)
+//                }
+//            }
+//        }
 
     }
 

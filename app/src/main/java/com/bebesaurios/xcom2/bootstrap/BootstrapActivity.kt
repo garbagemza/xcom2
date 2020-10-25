@@ -22,13 +22,12 @@ class BootstrapActivity : AppCompatActivity() {
     }
 
     private fun subscribe() {
-        bootstrapViewModel.reply().observe(this, Observer {
+        bootstrapViewModel.configurationReply().observe(this, Observer {
             it?.let {action ->
                 when (action) {
-                    is ReplyAction.UpdateWorkStatus -> {
-                        statusText.setText(action.stringRes)
-                    }
-                    ReplyAction.GoToHome -> {
+                    ConfigurationReply.Loading -> statusText.setText(R.string.checking_updates)
+                    ConfigurationReply.Error -> statusText.setText(R.string.unable_to_download_content_try_again_later)
+                    ConfigurationReply.Done -> {
                         val intent = Intent(this, MainActivity::class.java)
                         startActivity(intent)
                     }
