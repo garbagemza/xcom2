@@ -16,8 +16,8 @@ import kotlin.coroutines.suspendCoroutine
 object ConfigurationManager {
     private val repository: Repository by inject(Repository::class.java)
 
-    suspend fun updateConfigurations(requiredLocalKeys: List<String>, event: MutableLiveData<ConfigurationReply>) = withContext(Dispatchers.IO) {
-        withContext(Dispatchers.Main) { event.value = ConfigurationReply.Loading }
+    suspend fun updateConfigurations(requiredLocalKeys: List<String>, event: MutableLiveData<ConfigurationReply> = MutableLiveData()) = withContext(Dispatchers.IO) {
+        withContext(Dispatchers.Main) { event.value = ConfigurationReply.Loading(requiredLocalKeys) }
 
         val localDeferred = requiredLocalKeys.map { async { getLocalConfiguration(it) } }
         val localConfigs = localDeferred.awaitAll()
@@ -31,7 +31,7 @@ object ConfigurationManager {
         val filteredRequired = requiredConfigurationResults.filter { it.json == null }
 
         if (filteredRequired.isNotEmpty()) {
-            withContext(Dispatchers.Main) { event.value = ConfigurationReply.Error }
+            withContext(Dispatchers.Main) { event.value = ConfigurationReply.Error(requiredLocalKeys) }
             return@withContext
         }
 
@@ -50,7 +50,7 @@ object ConfigurationManager {
 
         proceedSavingExistingConfigurations(staleUpdateResults, updates)
 
-        withContext(Dispatchers.Main) { event.value = ConfigurationReply.Done }
+        withContext(Dispatchers.Main) { event.value = ConfigurationReply.Done(requiredLocalKeys) }
     }
 
     private fun proceedSavingNewConfigurations(configurationResults: List<DownloadContext>) {
@@ -154,9 +154,9 @@ object ConfigurationManager {
 }
 
 sealed class ConfigurationReply {
-    object Loading : ConfigurationReply()
-    object Error : ConfigurationReply()
-    object Done : ConfigurationReply()
+    data class Loading(val articles: List<String>) : ConfigurationReply()
+    data class Error(val articles: List<String>) : ConfigurationReply()
+    data class Done(val articles: List<String>) : ConfigurationReply()
 }
 
 data class Configuration(val key: String, val config: ConfigurationEntity?)

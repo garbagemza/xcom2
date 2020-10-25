@@ -6,8 +6,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.bebesaurios.xcom2.R
+import com.bebesaurios.xcom2.bootstrap.ConfigurationReply
+import com.bebesaurios.xcom2.main.page.model.Error
+import com.bebesaurios.xcom2.main.page.model.Loading
 import com.bebesaurios.xcom2.util.exhaustive
-import com.bebesaurios.xcom2.util.replaceFragment
 import kotlinx.android.synthetic.main.page_fragment.*
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
@@ -39,6 +41,34 @@ class PageFragment : Fragment() {
                     is ReplyAction.RenderPage -> {
                         val adapter = PageAdapter(it.model)
                         recyclerView.adapter = adapter
+                    }
+                }.exhaustive
+            }
+        })
+        pageViewModel.configuration().observe(viewLifecycleOwner, {
+            it?.let {
+                val arguments = wrap(arguments)
+
+                when (it) {
+                    is ConfigurationReply.Loading -> {
+                        if (it.articles.contains(arguments.articleKey)) {
+                            val adapter = LoadingStatusAdapter(listOf(Loading()))
+                            recyclerView.adapter = adapter
+                        }
+                        Unit
+                    }
+                    is ConfigurationReply.Error -> {
+                        if (it.articles.contains(arguments.articleKey)) {
+                            val adapter = LoadingStatusAdapter(listOf(Error()))
+                            recyclerView.adapter = adapter
+                        }
+                        Unit
+                    }
+                    is ConfigurationReply.Done -> {
+                        if (it.articles.contains(arguments.articleKey)) {
+                            pageViewModel.handle(InputAction.BuildPage(arguments.articleKey))
+                        }
+                        Unit
                     }
                 }.exhaustive
             }

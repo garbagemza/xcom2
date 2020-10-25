@@ -6,6 +6,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.bebesaurios.xcom2.bootstrap.ConfigurationManager
+import com.bebesaurios.xcom2.bootstrap.ConfigurationReply
 import com.bebesaurios.xcom2.database.Repository
 import com.bebesaurios.xcom2.main.page.model.ImagePushRow
 import com.bebesaurios.xcom2.main.page.model.Model
@@ -21,6 +23,7 @@ import org.koin.java.KoinJavaComponent.inject
 
 class PageViewModel : ViewModel() {
     private val replyAction = MutableLiveData<ReplyAction>()
+    private val configurationAction = MutableLiveData<ConfigurationReply>()
 
     @MainThread
     fun handle(action: InputAction) {
@@ -33,14 +36,12 @@ class PageViewModel : ViewModel() {
     @WorkerThread
     private suspend fun buildPage(articleKey: String) = withContext(Dispatchers.IO) {
         val content = getContentJson(articleKey)
-        val model = if (content != null) {
-            buildModelFromJson(content)
-        } else null
-
+        val model = if (content != null) { buildModelFromJson(content) } else null
         if (model != null) {
             withContext(Dispatchers.Main) { replyAction.value = ReplyAction.RenderPage(model) }
+            ConfigurationManager.updateConfigurations(listOf(articleKey))
         } else {
-
+            ConfigurationManager.updateConfigurations(listOf(articleKey), configurationAction)
         }
     }
 
@@ -105,6 +106,7 @@ class PageViewModel : ViewModel() {
     }
 
     fun reply() : LiveData<ReplyAction> = replyAction
+    fun configuration() : LiveData<ConfigurationReply> = configurationAction
 }
 
 sealed class InputAction {

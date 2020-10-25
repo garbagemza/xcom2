@@ -25,9 +25,9 @@ class BootstrapActivity : AppCompatActivity() {
         bootstrapViewModel.configurationReply().observe(this, Observer {
             it?.let {action ->
                 when (action) {
-                    ConfigurationReply.Loading -> statusText.setText(R.string.checking_updates)
-                    ConfigurationReply.Error -> statusText.setText(R.string.unable_to_download_content_try_again_later)
-                    ConfigurationReply.Done -> {
+                    is ConfigurationReply.Loading -> statusText.setText(R.string.checking_updates)
+                    is ConfigurationReply.Error -> statusText.setText(R.string.unable_to_download_content_try_again_later)
+                    is ConfigurationReply.Done -> {
                         val intent = Intent(this, MainActivity::class.java)
                         startActivity(intent)
                     }
