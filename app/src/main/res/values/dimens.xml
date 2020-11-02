@@ -9,8 +9,10 @@
     <!-- row height sizes -->
     <dimen name="row_height_small">56dp</dimen>
     <dimen name="row_height_normal">112dp</dimen>
+    <dimen name="row_height_big">224dp</dimen>
 
     <dimen name="row_image_normal">64dp</dimen>
+    <dimen name="row_image_big">@dimen/row_height_big</dimen>
 
     <!-- search rows -->
     <dimen name="row_height_search_result">@dimen/row_height_small</dimen>

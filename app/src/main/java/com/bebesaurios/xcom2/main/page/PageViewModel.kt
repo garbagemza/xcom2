@@ -9,10 +9,7 @@ import androidx.lifecycle.viewModelScope
 import com.bebesaurios.xcom2.bootstrap.ConfigurationManager
 import com.bebesaurios.xcom2.bootstrap.ConfigurationReply
 import com.bebesaurios.xcom2.database.Repository
-import com.bebesaurios.xcom2.main.page.model.ImagePushRow
-import com.bebesaurios.xcom2.main.page.model.Model
-import com.bebesaurios.xcom2.main.page.model.ParagraphRow
-import com.bebesaurios.xcom2.main.page.model.TitleRow
+import com.bebesaurios.xcom2.main.page.model.*
 import com.bebesaurios.xcom2.util.exhaustive
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -57,6 +54,7 @@ class PageViewModel : ViewModel() {
                     "TitleRow" -> buildTitleRow(rowJson)
                     "ParagraphRow" -> buildParagraphRow(rowJson)
                     "ImagePushRow" -> buildImagePushRow(rowJson)
+                    "ImageRow" -> buildImageRow(rowJson)
                     else -> throw JSONException("row type not found")
                 }.exhaustive
                 list.add(row)
@@ -66,6 +64,11 @@ class PageViewModel : ViewModel() {
             e.printStackTrace()
         }
         return list
+    }
+
+    private fun buildImageRow(json: JSONObject): Model {
+        val imageUrl = json.getString("image")
+        return ImageRow(imageUrl)
     }
 
     private fun buildImagePushRow(json: JSONObject): Model {

@@ -2,7 +2,8 @@ package com.bebesaurios.xcom2.main.page.model
 enum class Rows {
     TitleRow,
     ParagraphRow,
-    ImagePushRow
+    ImagePushRow,
+    ImageRow
 }
 
 interface Model {
@@ -22,4 +23,10 @@ class ParagraphRow(val text: String) : Model {
 class ImagePushRow(val text: String, internal val imageUrl: String, val page: String, val clickListener: (ImagePushRow) -> Unit) : Model {
     override val type: Rows
         get() = Rows.ImagePushRow
+}
+
+class ImageRow(val imageUrl: String) : Model {
+    override val type: Rows
+        get() = Rows.ImageRow
+
 }

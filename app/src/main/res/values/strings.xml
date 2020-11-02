@@ -6,4 +6,5 @@
     <string name="updating_content">Updating content</string>
     <string name="checking_updates">Checking updates.</string>
     <string name="downloading_index">Downloading index</string>
+    <string name="placeholder_for_image_row_views">Placeholder for Image Row views</string>
 </resources>
