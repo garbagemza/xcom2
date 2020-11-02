@@ -12,7 +12,8 @@
 
     <dimen name="row_image_normal">64dp</dimen>
 
-    <!-- search result row height -->
+    <!-- search rows -->
     <dimen name="row_height_search_result">@dimen/row_height_small</dimen>
+    <dimen name="row_height_search">@dimen/row_height_small</dimen>
 
 </resources>

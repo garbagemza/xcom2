@@ -9,8 +9,15 @@
     <com.bebesaurios.xcom2.search.ClearableWatcherEditText
         android:id="@+id/editText"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/row_height_normal"
+        android:layout_height="@dimen/row_height_search"
         android:textAppearance="@style/TextAppearance.AppCompat.Normal"
+        android:layout_marginStart="@dimen/spacing_normal"
+        android:layout_marginEnd="@dimen/spacing_normal"
+        android:textCursorDrawable="@null"
+        android:textColor="@null"
+        android:maxLines="1"
+        android:inputType="text"
+        android:imeOptions="actionSearch"
         app:layout_constraintTop_toTopOf="parent"
         />
 
