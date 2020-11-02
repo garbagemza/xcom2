@@ -3,7 +3,6 @@ package com.bebesaurios.xcom2.bootstrap
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Observer
 import com.bebesaurios.xcom2.main.MainActivity
 import com.bebesaurios.xcom2.R
 import com.bebesaurios.xcom2.util.exhaustive
@@ -22,7 +21,7 @@ class BootstrapActivity : AppCompatActivity() {
     }
 
     private fun subscribe() {
-        bootstrapViewModel.configurationReply().observe(this, Observer {
+        bootstrapViewModel.configurationReply().observe(this, {
             it?.let {action ->
                 when (action) {
                     is ConfigurationReply.Loading -> statusText.setText(R.string.checking_updates)

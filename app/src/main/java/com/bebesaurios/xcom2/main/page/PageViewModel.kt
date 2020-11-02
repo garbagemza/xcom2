@@ -70,9 +70,9 @@ class PageViewModel : ViewModel() {
 
     private fun buildImagePushRow(json: JSONObject): Model {
         val text = json.getString("text")
-        val image = json.getString("image")
+        val imageUrl = json.getString("image")
         val page = json.getString("page")
-        return ImagePushRow(text, image, page) {
+        return ImagePushRow(text, imageUrl, page) {
             replyAction.value = ReplyAction.NavigatePage(it.page)
         }
     }

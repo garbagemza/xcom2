@@ -14,7 +14,7 @@ class ImagePushRowVH(val parent: View) : PageViewHolder<ImagePushRow>(parent) {
             t.clickListener.invoke(t)
         }
 
-        Glide.with(parent).load("https://xcom-2.web.app/images/icon_grenadier.png").into(parent.imageView);
+        Glide.with(parent).load(t.imageUrl).into(parent.imageView);
 
     }
 }

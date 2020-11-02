@@ -19,7 +19,7 @@ class ParagraphRow(val text: String) : Model {
         get() = Rows.ParagraphRow
 }
 
-class ImagePushRow(val text: String, val image: String, val page: String, val clickListener: (ImagePushRow) -> Unit) : Model {
+class ImagePushRow(val text: String, internal val imageUrl: String, val page: String, val clickListener: (ImagePushRow) -> Unit) : Model {
     override val type: Rows
         get() = Rows.ImagePushRow
 }

@@ -1,7 +1,6 @@
 package com.bebesaurios.xcom2.bootstrap
 
 import androidx.annotation.MainThread
-import androidx.annotation.StringRes
 import androidx.annotation.WorkerThread
 import androidx.lifecycle.*
 import com.bebesaurios.xcom2.util.exhaustive
