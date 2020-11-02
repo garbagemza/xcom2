@@ -25,7 +25,10 @@ class MainActivity : BaseActivity() {
         setContentView(R.layout.main_activity)
         setSupportActionBar(findViewById(R.id.toolbar))
         subscribe()
-        pageViewModel.handle(InputAction.ShowIndex)
+
+        if (savedInstanceState == null) {
+            pageViewModel.handle(InputAction.ShowIndex)
+        }
     }
 
     private fun subscribe() {
@@ -53,7 +56,7 @@ class MainActivity : BaseActivity() {
             .builder()
             .setKey(articleKey)
             .build()
-        addFragment(R.id.content, page, articleKey)
+        replaceFragmentNoBackStack(R.id.content, page, articleKey)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
