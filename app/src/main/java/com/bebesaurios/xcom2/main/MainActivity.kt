@@ -1,5 +1,6 @@
 package com.bebesaurios.xcom2.main
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
@@ -11,9 +12,7 @@ import com.bebesaurios.xcom2.main.page.PageFragment
 import com.bebesaurios.xcom2.main.page.PageViewModel
 import com.bebesaurios.xcom2.main.page.ReplyAction
 import com.bebesaurios.xcom2.search.SearchActivity
-import com.bebesaurios.xcom2.util.addFragment
-import com.bebesaurios.xcom2.util.exhaustive
-import com.bebesaurios.xcom2.util.replaceFragment
+import com.bebesaurios.xcom2.util.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
@@ -72,6 +71,21 @@ class MainActivity : BaseActivity() {
 
     private fun initSearch() {
         val intent = Intent(this, SearchActivity::class.java)
-        startActivity(intent)
+        startActivityForResult(intent, RequestCodes.SearchRequestCode)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        when (requestCode) {
+            RequestCodes.SearchRequestCode -> {
+                if (resultCode == Activity.RESULT_OK ) {
+                    val articleKey = data?.getStringExtra("article")
+                    articleKey?.let { navigatePage(it) }
+                }
+                Unit
+            }
+            else -> throw RuntimeException("Unknown request code")
+        }.exhaustive
     }
 }

@@ -1,6 +1,7 @@
 package com.bebesaurios.xcom2.search
 
 import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -11,9 +12,9 @@ import android.widget.TextView.OnEditorActionListener
 import androidx.appcompat.app.AppCompatActivity
 import com.bebesaurios.xcom2.R
 import com.bebesaurios.xcom2.database.Repository
+import com.bebesaurios.xcom2.util.exhaustive
 import kotlinx.android.synthetic.main.search_activity.*
 import org.koin.android.ext.android.inject
-
 
 class SearchActivity : AppCompatActivity() {
 
@@ -50,11 +51,26 @@ class SearchActivity : AppCompatActivity() {
     private fun updateModel(searchText: String) {
         val repository : Repository by inject()
         val results = repository.findSearchResults(searchText)
-        val adapter = SearchAdapter(results)
+        val adapter = SearchAdapter(results, ::handleInput)
         recyclerView.adapter = adapter
     }
 
+    private fun handleInput(action: InputAction) {
+        when (action) {
+            is InputAction.ArticleResultClicked -> {
+                val data = Intent()
+                data.putExtra("article", action.article)
+                setResult(Activity.RESULT_OK, data)
+                finish()
+            }
+        }.exhaustive
+    }
 }
+
+sealed class InputAction {
+    data class ArticleResultClicked(val article: String) : InputAction()
+}
+
 // TODO: Move to an extension class
 fun Activity.hideKeyboard() {
     val imm: InputMethodManager = getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager

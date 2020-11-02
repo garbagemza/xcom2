@@ -6,10 +6,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bebesaurios.xcom2.R
 import com.bebesaurios.xcom2.database.SearchResult
 
-class SearchAdapter(val model: List<SearchResult>) : RecyclerView.Adapter<SearchVH>() {
+class SearchAdapter(val model: List<SearchResult>, private val callback: (InputAction) -> Unit) : RecyclerView.Adapter<SearchVH>() {
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SearchVH {
         val inflater = LayoutInflater.from(parent.context)
-        return SearchVH(inflater.inflate(R.layout.search_result_row, parent, false))
+        return SearchVH(inflater.inflate(R.layout.search_result_row, parent, false), callback)
     }
 
     override fun onBindViewHolder(holder: SearchVH, position: Int) {
