@@ -9,4 +9,10 @@
         <item name="android:textColor">@color/main_text_color</item>
         <item name="android:textSize">@dimen/font_normal</item>
     </style>
+
+    <style name="TextAppearance.AppCompat.Accent" parent="TextAppearance.AppCompat">
+        <item name="android:textColor">@color/title_accent</item>
+        <item name="android:textSize">@dimen/font_normal</item>
+    </style>
+
 </resources>

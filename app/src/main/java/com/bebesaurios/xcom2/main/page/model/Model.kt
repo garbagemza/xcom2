@@ -3,7 +3,9 @@ enum class Rows {
     TitleRow,
     ParagraphRow,
     ImagePushRow,
-    ImageRow
+    ImageRow,
+    TitleBulletPointL1Row,
+    NormalBulletPointL1Row
 }
 
 interface Model {
@@ -28,5 +30,15 @@ class ImagePushRow(val text: String, internal val imageUrl: String, val page: St
 class ImageRow(val imageUrl: String) : Model {
     override val type: Rows
         get() = Rows.ImageRow
+}
 
+// level one bullet point row with title
+class TitleBulletPointL1Row(val subtitleText: String, val text: String) : Model {
+    override val type: Rows
+        get() = Rows.TitleBulletPointL1Row
+}
+
+class NormalBulletPointL1Row(val text: String) : Model {
+    override val type: Rows
+        get() = Rows.NormalBulletPointL1Row
 }

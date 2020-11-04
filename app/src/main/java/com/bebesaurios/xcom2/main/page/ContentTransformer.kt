@@ -12,9 +12,9 @@ object ContentTransformer {
     @WorkerThread
     fun buildModelFromJson(content: JSONObject): List<Model> {
         val list = mutableListOf<Model>()
-        try {
-            val rowsArray = content.getJSONArray("rows")
-            for (i in 0 until rowsArray.length()) {
+        val rowsArray = content.getJSONArray("rows")
+        for (i in 0 until rowsArray.length()) {
+            try {
                 val rowJson = rowsArray.getJSONObject(i)
                 val type = rowJson.getString("type")
                 val row = when (type) {
@@ -22,13 +22,14 @@ object ContentTransformer {
                     "ParagraphRow" -> buildParagraphRow(rowJson)
                     "ImagePushRow" -> buildImagePushRow(rowJson)
                     "ImageRow" -> buildImageRow(rowJson)
+                    "TitleBulletPointL1Row" -> buildTitleBulletPointL1Row(rowJson)
+                    "NormalBulletPointL1Row" -> buildNormalBulletPointL1Row(rowJson)
                     else -> throw JSONException("row type not found")
                 }.exhaustive
                 list.add(row)
+            } catch (e: JSONException) {
+                e.printStackTrace()
             }
-
-        } catch (e: JSONException) {
-            e.printStackTrace()
         }
         return list
     }
@@ -52,6 +53,16 @@ object ContentTransformer {
 
     private fun buildParagraphRow(json: JSONObject): Model {
         return ParagraphRow(json.getString("value"))
+    }
+
+    private fun buildTitleBulletPointL1Row(json: JSONObject): Model {
+        val subtitle = json.getString("subtitle")
+        val text = json.getString("value")
+        return TitleBulletPointL1Row(subtitle, text)
+    }
+
+    private fun buildNormalBulletPointL1Row(json: JSONObject): Model {
+        return NormalBulletPointL1Row(json.getString("value"))
     }
 
 }
