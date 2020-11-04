@@ -39,7 +39,7 @@ class PageFragment : Fragment() {
                     is ReplyAction.OpenIndexPage -> {}
                     is ReplyAction.NavigatePage -> {}
                     is ReplyAction.RenderPage -> {
-                        val adapter = PageAdapter(it.model)
+                        val adapter = PageAdapter(it.model, pageViewModel::handle)
                         recyclerView.adapter = adapter
                     }
                 }.exhaustive

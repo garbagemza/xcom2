@@ -27,13 +27,14 @@ class PageViewModel : ViewModel() {
         when (action) {
             InputAction.ShowIndex -> viewModelScope.launch { withContext(Dispatchers.Main) { showIndex() } }
             is InputAction.BuildPage -> viewModelScope.launch { buildPage(action.articleKey) }
+            is InputAction.ImagePushRowClicked -> viewModelScope.launch { withContext(Dispatchers.Main) { imagePushRowClicked(action.row) } }
         }.exhaustive
     }
 
     @WorkerThread
     private suspend fun buildPage(articleKey: String) = withContext(Dispatchers.IO) {
         val content = getContentJson(articleKey)
-        val model = if (content != null) { buildModelFromJson(content) } else null
+        val model = if (content != null) { ContentTransformer.buildModelFromJson(content) } else null
         if (model != null) {
             withContext(Dispatchers.Main) { replyAction.value = ReplyAction.RenderPage(model) }
             ConfigurationManager.updateConfigurations(listOf(articleKey))
@@ -42,51 +43,9 @@ class PageViewModel : ViewModel() {
         }
     }
 
-    @WorkerThread
-    private fun buildModelFromJson(content: JSONObject): List<Model> {
-        val list = mutableListOf<Model>()
-        try {
-            val rowsArray = content.getJSONArray("rows")
-            for (i in 0 until rowsArray.length()) {
-                val rowJson = rowsArray.getJSONObject(i)
-                val type = rowJson.getString("type")
-                val row = when (type) {
-                    "TitleRow" -> buildTitleRow(rowJson)
-                    "ParagraphRow" -> buildParagraphRow(rowJson)
-                    "ImagePushRow" -> buildImagePushRow(rowJson)
-                    "ImageRow" -> buildImageRow(rowJson)
-                    else -> throw JSONException("row type not found")
-                }.exhaustive
-                list.add(row)
-            }
-
-        } catch (e: JSONException) {
-            e.printStackTrace()
-        }
-        return list
-    }
-
-    private fun buildImageRow(json: JSONObject): Model {
-        val imageUrl = json.getString("image")
-        return ImageRow(imageUrl)
-    }
-
-    private fun buildImagePushRow(json: JSONObject): Model {
-        val text = json.getString("text")
-        val imageUrl = json.getString("image")
-        val page = json.getString("page")
-        return ImagePushRow(text, imageUrl, page) {
-            replyAction.value = ReplyAction.NavigatePage(it.page)
-        }
-    }
-
-    private fun buildTitleRow(json: JSONObject): Model {
-        val value = json.getString("value")
-        return TitleRow(value)
-    }
-
-    private fun buildParagraphRow(json: JSONObject): Model {
-        return ParagraphRow(json.getString("value"))
+    @MainThread
+    private fun imagePushRowClicked(row: ImagePushRow) {
+        replyAction.value = ReplyAction.NavigatePage(row.page)
     }
 
     @MainThread
@@ -114,6 +73,8 @@ class PageViewModel : ViewModel() {
 
 sealed class InputAction {
     data class BuildPage(val articleKey: String) : InputAction()
+    data class ImagePushRowClicked(val row: ImagePushRow) : InputAction()
+
     object     ShowIndex : InputAction()
 }
 
