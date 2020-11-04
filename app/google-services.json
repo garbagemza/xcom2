@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "28017165939",
+    "firebase_url": "https://xcom-2.firebaseio.com",
+    "project_id": "xcom-2",
+    "storage_bucket": "xcom-2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:28017165939:android:cfed5e4eb7d00b61690c06",
+        "android_client_info": {
+          "package_name": "com.hexsignal.xcom2guide"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "28017165939-u1nu3lka0meip7okka27urb9juretvqs.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAH1qkMwhEVfEWHTqzzpz3kTw8aJ9f41EM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "28017165939-u1nu3lka0meip7okka27urb9juretvqs.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
