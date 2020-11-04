@@ -21,7 +21,8 @@ class PageAdapter(private val models: List<Model>, private val handler: (InputAc
             Rows.ParagraphRow.ordinal -> ParagraphRowVH(inflater.inflate(R.layout.paragraph_row, parent, false))
             Rows.ImagePushRow.ordinal -> ImagePushRowVH(inflater.inflate(R.layout.image_push_row, parent, false), ::handleInput)
             Rows.ImageRow.ordinal -> ImageRowVH(inflater.inflate(R.layout.image_row, parent, false))
-
+            Rows.TitleBulletPointL1Row.ordinal -> TitleBulletPointL1VH(inflater.inflate(R.layout.normal_bullet_point_l1_row, parent, false))
+            Rows.NormalBulletPointL1Row.ordinal -> NormalBulletPointL1VH(inflater.inflate(R.layout.normal_bullet_point_l1_row, parent, false))
             else -> throw RuntimeException("Invalid view type")
 
         } as PageViewHolder<Model>

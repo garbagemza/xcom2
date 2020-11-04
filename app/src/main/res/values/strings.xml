@@ -7,4 +7,5 @@
     <string name="checking_updates">Checking updates.</string>
     <string name="downloading_index">Downloading index</string>
     <string name="placeholder_for_image_row_views">Placeholder for Image Row views</string>
+    <string name="non_translatable_bullet_point">•</string>
 </resources>

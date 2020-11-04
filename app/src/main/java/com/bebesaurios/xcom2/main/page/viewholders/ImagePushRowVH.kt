@@ -15,7 +15,7 @@ class ImagePushRowVH(val parent: View, private val handler: (ViewHolderAction) -
             handler.invoke(ViewHolderAction.ImagePushRowClicked(t))
         }
 
-        Glide.with(parent).load(t.imageUrl).into(parent.imageView);
+        Glide.with(parent).load(t.imageUrl).into(parent.imageView)
 
     }
 }
