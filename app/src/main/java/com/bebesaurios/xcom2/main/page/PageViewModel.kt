@@ -33,13 +33,15 @@ class PageViewModel : ViewModel() {
 
     @WorkerThread
     private suspend fun buildPage(articleKey: String) = withContext(Dispatchers.IO) {
+        val configurationManager: ConfigurationManager by inject(ConfigurationManager::class.java)
+
         val content = getContentJson(articleKey)
         val model = if (content != null) { ContentTransformer.buildModelFromJson(content) } else null
         if (model != null) {
             withContext(Dispatchers.Main) { replyAction.value = ReplyAction.RenderPage(model) }
-            ConfigurationManager.updateConfigurations(listOf(articleKey))
+            configurationManager.updateConfigurations(listOf(articleKey))
         } else {
-            ConfigurationManager.updateConfigurations(listOf(articleKey), configurationAction)
+            configurationManager.updateConfigurations(listOf(articleKey), configurationAction)
         }
     }
 

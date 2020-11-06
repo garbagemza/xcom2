@@ -13,7 +13,7 @@ import org.koin.java.KoinJavaComponent.inject
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
-object ConfigurationManager {
+class ConfigurationManager {
     private val repository: Repository by inject(Repository::class.java)
 
     suspend fun updateConfigurations(requiredLocalKeys: List<String>, event: MutableLiveData<ConfigurationReply> = MutableLiveData()) = withContext(Dispatchers.IO) {

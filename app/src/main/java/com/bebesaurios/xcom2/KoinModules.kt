@@ -3,6 +3,7 @@ package com.bebesaurios.xcom2
 import android.content.Context
 import androidx.room.Room
 import com.bebesaurios.xcom2.bootstrap.BootstrapViewModel
+import com.bebesaurios.xcom2.bootstrap.ConfigurationManager
 import com.bebesaurios.xcom2.database.AppDatabase
 import com.bebesaurios.xcom2.database.Repository
 import com.bebesaurios.xcom2.main.page.PageViewModel
@@ -22,7 +23,7 @@ val persistenceModule = module {
             .allowMainThreadQueries()
             .build()
     }
-
+    single { ConfigurationManager() }
     single { Repository(get()) }
 
     // for preferences injection
