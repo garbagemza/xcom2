@@ -10,14 +10,13 @@
 
     <ImageView
         android:id="@+id/imageView"
-        android:contentDescription="@string/app_name"
         android:layout_width="@dimen/row_image_normal"
         android:layout_height="@dimen/row_image_normal"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         android:layout_marginStart="@dimen/spacing_normal"
-        />
+        tools:ignore="ContentDescription" />
 
     <TextView
         android:id="@+id/textView"

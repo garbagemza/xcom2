@@ -11,6 +11,7 @@ class ImagePushRowVH(val parent: View, private val handler: (ViewHolderAction) -
 
     override fun bind(t: ImagePushRow) {
         parent.textView.text = t.text
+        parent.contentDescription = "Image for ${t.text}"
         parent.setOnClickListener {
             handler.invoke(ViewHolderAction.ImagePushRowClicked(t))
         }
