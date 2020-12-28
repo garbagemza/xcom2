@@ -1,20 +1,25 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 buildscript {
-    ext.kotlin_version = "1.4.10"
-    ext.koin_version = "2.1.6"
-    ext.room_version = "2.2.5"
-    ext.retrofit_version = "2.9.0"
+    ext {
+        build_gradle = '4.1.1'
+        firebase_crashlytics_gradle = '2.4.1'
+        kotlin_version = '1.4.21'
+        koin_version = '2.2.0'
+        navigation_fragment = '2.3.2'
+        room_version = "2.2.6"
+        retrofit_version = "2.9.0"
+    }
 
     repositories {
         google()
         jcenter()
     }
     dependencies {
-        classpath "com.android.tools.build:gradle:4.0.2"
+        classpath "com.android.tools.build:gradle:$build_gradle"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath 'com.google.gms:google-services:4.3.4'
 
-        classpath 'com.google.firebase:firebase-crashlytics-gradle:2.3.0'
+        classpath "com.google.firebase:firebase-crashlytics-gradle:$firebase_crashlytics_gradle"
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files

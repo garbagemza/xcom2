@@ -1,7 +1,6 @@
 package com.bebesaurios.xcom2
 
 import android.app.Application
-import com.facebook.stetho.Stetho
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
@@ -16,7 +15,5 @@ class XCOM2Application : Application() {
             modules(persistenceModule, networkModule)
         }
 
-        // TODO: move to a content provider
-        Stetho.initializeWithDefaults(this);
     }
 }

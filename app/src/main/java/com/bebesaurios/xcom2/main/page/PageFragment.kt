@@ -15,7 +15,7 @@ import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 class PageFragment : Fragment() {
 
-    private val pageViewModel by sharedViewModel(PageViewModel::class)
+    private val pageViewModel: PageViewModel by sharedViewModel()
 
     companion object {
         fun builder() = PageFragmentBuilder()
